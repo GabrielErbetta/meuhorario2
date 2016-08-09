@@ -1,3 +1,9 @@
-<h1>MEU HORÁRIO 2.0</h1>
+<h1>MEU HORÁRIO</h1>
 
-<h3><a href="<%= course_page_path 112 %>">Ciência da Computação</a></h3>
+<a href="<%= crawl_cs_path %>">Crawlear matérias de Ciência da Computação</a>
+<br />
+<a href="<%= clear_db_path %>">Limpar database</a>
+
+<% @courses.each do |course| %>
+  <h3><a href="<%= course_page_path course.code %>"><%= course.name %></a></h3>
+<% end %>

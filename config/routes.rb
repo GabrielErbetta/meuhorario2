@@ -3,4 +3,6 @@ Rails.application.routes.draw do
 
   root 'application#index'
   get 'curso/:id' => 'courses#show', :as => 'course_page'
+  get 'clear_db' => 'application#clear_db', :as => 'clear_db'
+  get 'crawl_cs' => 'application#crawl_cs', :as => 'crawl_cs'
 end
