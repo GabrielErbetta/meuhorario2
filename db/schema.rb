@@ -10,9 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20160809122610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "course_disciplines", force: :cascade do |t|
+    t.integer  "semester"
+    t.string   "nature",        limit: 3
+    t.integer  "course_id"
+    t.integer  "discipline_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.index ["course_id"], name: "index_course_disciplines_on_course_id", using: :btree
+    t.index ["discipline_id"], name: "index_course_disciplines_on_discipline_id", using: :btree
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string   "name"
+    t.string   "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_courses_on_code", using: :btree
+  end
+
+  create_table "disciplines", force: :cascade do |t|
+    t.string   "code"
+    t.string   "name"
+    t.string   "requisites"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_disciplines_on_code", using: :btree
+  end
+
+  add_foreign_key "course_disciplines", "courses"
+  add_foreign_key "course_disciplines", "disciplines"
 end
