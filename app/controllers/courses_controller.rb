@@ -1,7 +1,7 @@
 class CoursesController < ApplicationController
 
   def show
-    @course = Course.find_by_code params[:id]
+    @course = Course.find_by_code params[:code]
 
     unless @course.nil?
       @semesters = []
