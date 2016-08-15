@@ -1,5 +1,6 @@
 development:
   adapter: postgresql
+  host: localhost
   database: meuhorario_dev
   pool: 5
   username: meuhorario
@@ -7,6 +8,7 @@ development:
 
 test:
   adapter: postgresql
+  host: localhost
   database: meuhorario_test
   pool: 5
   username: meuhorario

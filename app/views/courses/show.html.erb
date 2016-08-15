@@ -1,12 +1,14 @@
 <% if @course %>
   <h1><%= @course.name %></h1>
 
-  <% @semesters[1..-1].each do |semester| %>
-    <div style="width: 210px; display: inline-block; vertical-align: top;">
-      <% semester.each do |discipline| %>
-        <div style="height: 100px; width: 200px; background-color: lightgray; display:flex; justify-content:center; align-items:center; margin: 5px; cursor: pointer; text-align: center; vertical-align: top;"><%= discipline.name %></div>
-      <% end %>
-    </div>
+  <% unless @semesters.blank? %>
+    <% @semesters[1..-1].each do |semester| %>
+      <div style="width: 210px; display: inline-block; vertical-align: top;">
+        <% semester.each do |discipline| %>
+          <div style="height: 100px; width: 200px; background-color: lightgray; display:flex; justify-content:center; align-items:center; margin: 5px; cursor: pointer; text-align: center; vertical-align: top;"><%= discipline.name %></div>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 <% else %>
   <h1>Curso não cadastrado</h1>

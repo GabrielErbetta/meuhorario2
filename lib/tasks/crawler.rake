@@ -1,13 +1,35 @@
 namespace :crawler do
-  # desc "Utils to convert the current data from Ad model to ClassifiedAd model"
-  # task :test_ranking => :environment do
-  #   search = Ad.search do
-  #     fulltext "teste" do
-  #       boost(function {product(:images_count, 2)})
-  #       boost(1.5) { with(:has_price_unit, true) }
-  #     end
-  #   end
-  # end
+
+  desc 'Crawl courses codes, names and curriculums'
+  task :courses => :environment do
+    require 'rubygems'
+    require 'mechanize'
+
+    agent = Mechanize.new
+    page = agent.get 'https://alunoweb.ufba.br/SiacWWW/ListaCursosEmentaPublico.do?cdGrauCurso=01'
+
+    courseAnchors = page.search('a')
+
+    courseAnchors.each do |a|
+      url = a.attribute('href').value
+
+      codeIndex = url.index('cdCurso') + 8
+      code = url[codeIndex..codeIndex + 5]
+
+      curriculumIndex = url.index('nuPerCursoInicial') + 18
+      curriculum = url[curriculumIndex..curriculumIndex + 4]
+
+      course = Course.find_by_code 'code'
+      unless course
+        course = Course.new
+        course.code = code
+        course.name = a.text
+        course.curriculum = curriculum
+        course.save
+      end
+    end
+  end
+
   desc 'Crawl computer science classes page'
   task :cs_classes => :environment do
     course = Course.find_by_code '112'
@@ -27,7 +49,6 @@ namespace :crawler do
 
     table = page.search('table')[0]
     rows = table.css('tr')[2..-1]
-    #puts rows.inspect
 
     semester = 1
     rows.each do |row|
