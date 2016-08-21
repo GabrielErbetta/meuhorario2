@@ -48,7 +48,7 @@ namespace :crawler do
       rows.each do |row|
         columns = row.css('td')
 
-        semester = columns[0].css('b').text[0].to_i unless columns[0].css('b').text.blank?
+        semester = columns[0].css('b').text.to_i unless columns[0].css('b').text.blank?
         nature = columns[1].text
         code = columns[2].text
         name = columns[3].css('a').text.strip
@@ -103,7 +103,7 @@ namespace :crawler do
     rows.each do |row|
       columns = row.css('td')
 
-      semester = columns[0].css('b').text[0].to_i unless columns[0].css('b').text.blank?
+      semester = columns[0].css('b').text.to_i unless columns[0].css('b').text.blank?
       nature = columns[1].text
       code = columns[2].text
       name = columns[3].css('a').text.strip
@@ -118,14 +118,26 @@ namespace :crawler do
         discipline.name = name
         discipline.requisites = requisites.join '|'
         discipline.save
+      end
 
+      course_discipline = CourseDiscipline.where(course_id: course.id, discipline_id: discipline.id)
+      if course_discipline.blank?
         course_discipline = CourseDiscipline.new
         course_discipline.semester = semester
         course_discipline.nature = nature
         course_discipline.discipline = discipline
         course_discipline.course = course
         course_discipline.save
+
+        requisites.each do |requisite|
+          puts "#{requisite}"
+          pr = PreRequisite.new
+          pr.course_discipline = course_discipline
+          pr.discipline = Discipline.find_by_code requisite
+          pr.save
+        end
       end
+
     end
   end
 end

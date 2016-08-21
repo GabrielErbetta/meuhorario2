@@ -7,9 +7,9 @@ class ApplicationController < ActionController::Base
   end
 
   def clear_db
-    CourseDiscipline.delete_all
-    Discipline.delete_all
-    Course.delete_all
+    CourseDiscipline.destroy_all
+    Discipline.destroy_all
+    Course.destroy_all
 
     redirect_to root_path
   end

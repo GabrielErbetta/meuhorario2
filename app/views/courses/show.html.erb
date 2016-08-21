@@ -7,11 +7,41 @@
       <div style="width: 160px; display: inline-block; vertical-align: top;">
         <% if semester %>
           <% semester.each do |discipline| %>
-            <div style="height: 100px; width: 150px; background-color: lightgray; display:flex; justify-content:center; align-items:center; margin: 5px; cursor: pointer; text-align: center; vertical-align: top;"><%= discipline.name %></div>
+            <div id="<%= discipline.code %>" class="discipline" style="height: 100px; width: 150px; background-color: lightgray; display:flex; justify-content:center; align-items:center; margin: 5px; cursor: pointer; text-align: center; vertical-align: top;"><%= discipline.name %></div>
           <% end %>
         <% end %>
       </div>
     <% end %>
+
+    <script>
+      var disciplines = document.getElementsByClassName("discipline");
+      var preRequisites  = <%= raw @pre  %>;
+      var postRequisites = <%= raw @post %>;
+
+      function changeBorders(code, colorPre, colorPost) {
+        return function() {
+          if (preRequisites[code]) {
+            preRequisites[code].forEach(function(preReq) {
+              document.getElementById(preReq).style.backgroundColor = colorPre;
+            });
+          }
+
+          if (postRequisites[code]) {
+            postRequisites[code].forEach(function(postReq) {
+              document.getElementById(postReq).style.backgroundColor = colorPost;
+            });
+          }
+        };
+      }
+
+      for (var i = 0; i < disciplines.length; i++) {
+        var code = disciplines[i].id;
+        if (preRequisites[code] || postRequisites[code]) {
+          disciplines[i].addEventListener("mouseover", changeBorders(code, "#FF8A65", "#81C784"));
+          disciplines[i].addEventListener("mouseout", changeBorders(code, "lightgray", "lightgray"));
+        }
+      }
+    </script>
   <% end %>
 <% else %>
   <h1>Curso não cadastrado</h1>
