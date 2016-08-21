@@ -137,7 +137,6 @@ namespace :crawler do
           pr.save
         end
       end
-
     end
   end
 end
