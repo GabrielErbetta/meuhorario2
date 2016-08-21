@@ -52,6 +52,7 @@ namespace :crawler do
         nature = columns[1].text
         code = columns[2].text
         name = columns[3].css('a').text.strip
+        name = columns[3].text.strip if name == ""
         requisites = columns[4].text
         requisites = requisites == '--' ? [] : requisites.split(', ')
 
@@ -73,6 +74,19 @@ namespace :crawler do
           course_discipline.discipline = discipline
           course_discipline.course = course
           course_discipline.save
+
+          requisites.each do |requisite|
+            pre_req_discipline = Discipline.find_by_code requisite
+
+            if (pre_req_discipline.blank?)
+              puts "Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
+            else
+              pr = PreRequisite.new
+              pr.course_discipline = course_discipline
+              pr.discipline = pre_req_discipline
+              pr.save
+            end
+          end
         end
       end
     end

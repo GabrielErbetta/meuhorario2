@@ -6,5 +6,6 @@ Rails.application.routes.draw do
   get 'clear_db' => 'application#clear_db', :as => 'clear_db'
   get 'crawl_courses' => 'application#crawl_courses', :as => 'crawl_courses'
   get 'crawl_disciplines' => 'application#crawl_disciplines', :as => 'crawl_disciplines'
+  get 'crawl_disciplines_pre_reqs' => 'application#crawl_disciplines_pre_reqs', :as => 'crawl_disciplines_pre_reqs'
   get 'crawl_cs' => 'application#crawl_cs', :as => 'crawl_cs'
 end
