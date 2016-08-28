@@ -27,6 +27,7 @@ namespace :crawler do
         course = Course.new
         course.code = code
         course.name = a.text
+        course.area = code[0].to_i
         course.curriculum = curriculum
         course.save
       end
@@ -182,7 +183,6 @@ namespace :crawler do
           discipline = Discipline.new
           discipline.code = code
           discipline.name = name
-          discipline.requisites = requisites.join '|'
           discipline.save
         end
 

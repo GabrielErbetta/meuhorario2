@@ -7,7 +7,7 @@ class CreatePreRequisite < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    add_foreign_key :pre_requisites, :course_discipline, column: :pre_discipline_id
-    add_foreign_key :pre_requisites, :course_discipline, column: :post_discipline_id
+    add_foreign_key :pre_requisites, :course_disciplines, column: :pre_discipline_id
+    add_foreign_key :pre_requisites, :course_disciplines, column: :post_discipline_id
   end
 end
