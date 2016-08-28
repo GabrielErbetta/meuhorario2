@@ -8,28 +8,28 @@ class CoursesController < ApplicationController
       pre = {}
       post = {}
 
-      @course.course_disciplines.each do |d|
-        if @semesters[d.semester] == nil
-          @semesters[d.semester] = [d.discipline]
+      @course.course_disciplines.where(nature: 'OB').each do |cd|
+        if @semesters[cd.semester] == nil
+          @semesters[cd.semester] = [cd.discipline]
         else
-          @semesters[d.semester] << d.discipline
+          @semesters[cd.semester] << cd.discipline
         end
 
-        pre_requisites = PreRequisite.where(course_discipline: d)
+        pre_requisites = cd.pre_requisites
         pre_requisites.each do |p|
-          if pre[d.discipline.code] == nil
-            pre[d.discipline.code] = [p.discipline.code]
+          if pre[cd.discipline.code] == nil
+            pre[cd.discipline.code] = [p.pre_discipline.discipline.code]
           else
-            pre[d.discipline.code] << p.discipline.code
+            pre[cd.discipline.code] << p.pre_discipline.discipline.code
           end
         end
 
-        post_requisites = PreRequisite.where(discipline: d.discipline)
+        post_requisites = cd.post_requisites
         post_requisites.each do |p|
-          if post[d.discipline.code] == nil
-            post[d.discipline.code] = [p.course_discipline.discipline.code]
+          if post[cd.discipline.code] == nil
+            post[cd.discipline.code] = [p.post_discipline.discipline.code]
           else
-            post[d.discipline.code] << p.course_discipline.discipline.code
+            post[cd.discipline.code] << p.post_discipline.discipline.code
           end
         end
 
@@ -38,6 +38,8 @@ class CoursesController < ApplicationController
         @post = post.to_json
       end
     end
+
+    @ops = @course.course_disciplines.where.not(nature: 'OB')
   end
 
 end

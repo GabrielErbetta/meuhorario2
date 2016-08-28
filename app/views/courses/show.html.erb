@@ -13,6 +13,10 @@
       </div>
     <% end %>
 
+    <% @ops.each do |op| %>
+      <p id="<%= op.discipline.code %>"><%= op.discipline.name %></p>
+    <% end %>
+
     <script>
       var disciplines = document.getElementsByClassName("discipline");
       var preRequisites  = <%= raw @pre  %>;

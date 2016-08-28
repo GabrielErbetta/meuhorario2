@@ -45,16 +45,14 @@ ActiveRecord::Schema.define(version: 20160820170857) do
   end
 
   create_table "pre_requisites", force: :cascade do |t|
-    t.integer  "course_discipline_id"
-    t.integer  "discipline_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.index ["course_discipline_id"], name: "index_pre_requisites_on_course_discipline_id", using: :btree
-    t.index ["discipline_id"], name: "index_pre_requisites_on_discipline_id", using: :btree
+    t.integer  "pre_discipline_id"
+    t.integer  "post_discipline_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.index ["post_discipline_id"], name: "index_pre_requisites_on_post_discipline_id", using: :btree
+    t.index ["pre_discipline_id"], name: "index_pre_requisites_on_pre_discipline_id", using: :btree
   end
 
   add_foreign_key "course_disciplines", "courses"
   add_foreign_key "course_disciplines", "disciplines"
-  add_foreign_key "pre_requisites", "course_disciplines"
-  add_foreign_key "pre_requisites", "disciplines"
 end
