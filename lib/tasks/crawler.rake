@@ -55,8 +55,6 @@ namespace :crawler do
           code = columns[2].text
           name = columns[3].css('a').text.strip
           name = columns[3].text.strip if name == ""
-          requisites = columns[4].text
-          requisites = requisites == '--' ? [] : requisites.split(', ')
 
           discipline = Discipline.find_by_code code
 
@@ -64,7 +62,6 @@ namespace :crawler do
             discipline = Discipline.new
             discipline.code = code
             discipline.name = name
-            discipline.requisites = requisites.join '|'
             discipline.save
           end
 
@@ -76,19 +73,49 @@ namespace :crawler do
             course_discipline.discipline = discipline
             course_discipline.course = course
             course_discipline.save
+          end
+        end
+      end
+    end
+  end
 
-            requisites.each do |requisite|
-              pre_discipline = Discipline.find_by_code requisite
-              pre_cd = CourseDiscipline.where(course: course, discipline: pre_discipline).first
 
-              if (pre_cd.blank?)
-                puts "Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
-              else
-                pr = PreRequisite.new
-                pr.pre_discipline = pre_cd
-                pr.post_discipline = course_discipline
-                pr.save
-              end
+  desc 'Crawl the disciplines of every known course'
+  task :pre_requisites => :environment do
+    require 'rubygems'
+    require 'mechanize'
+
+    Course.all.each do |course|
+      agent = Mechanize.new
+      hub = agent.get "https://alunoweb.ufba.br/SiacWWW/CurriculoCursoGradePublico.do?cdCurso=#{course.code}&nuPerCursoInicial=#{course.curriculum}"
+
+      for i in 0..1
+        page = hub.links[i].click
+
+        table = page.search('table')[0]
+        rows = table.css('tr')[2..-1]
+
+        rows.each do |row|
+          columns = row.css('td')
+
+          code = columns[2].text
+          requisites = columns[4].text
+          requisites = requisites == '--' ? [] : requisites.split(', ')
+
+          discipline = Discipline.find_by_code code
+          course_discipline = CourseDiscipline.where(course_id: course.id, discipline_id: discipline.id).first
+
+          requisites.each do |requisite|
+            pre_discipline = Discipline.find_by_code requisite
+            pre_cd = CourseDiscipline.where(course: course, discipline: pre_discipline).first
+
+            if (pre_cd.blank?)
+              puts "Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
+            else
+              pr = PreRequisite.new
+              pr.pre_discipline = pre_cd
+              pr.post_discipline = course_discipline
+              pr.save
             end
           end
         end
