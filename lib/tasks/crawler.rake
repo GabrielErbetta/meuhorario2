@@ -2,6 +2,9 @@ namespace :crawler do
 
   desc 'Crawl courses codes, names and curriculums'
   task :courses => :environment do
+    puts '-----------------------------------------------------------------------'
+    puts '-> Starting courses crawling...'
+
     require 'rubygems'
     require 'mechanize'
 
@@ -28,14 +31,21 @@ namespace :crawler do
         course.save
       end
     end
+    puts '-> Finished courses crawling'
+    puts '-----------------------------------------------------------------------'
   end
 
 
   desc 'Crawl the disciplines of every known course'
   task :disciplines => :environment do
+    puts '-----------------------------------------------------------------------'
+    puts '-> Starting disciplines crawling...'
+
+    require 'rubygems'
+    require 'mechanize'
+
     Course.all.each do |course|
-      require 'rubygems'
-      require 'mechanize'
+      puts "    Crawling #{course.name}"
 
       agent = Mechanize.new
       hub = agent.get "https://alunoweb.ufba.br/SiacWWW/CurriculoCursoGradePublico.do?cdCurso=#{course.code}&nuPerCursoInicial=#{course.curriculum}"
@@ -77,15 +87,22 @@ namespace :crawler do
         end
       end
     end
+    puts '-> Finished disciplines crawling'
+    puts '-----------------------------------------------------------------------'
   end
 
 
   desc 'Crawl the disciplines of every known course'
   task :pre_requisites => :environment do
+    puts '-----------------------------------------------------------------------'
+    puts '-> Starting pre-requisites crawling...'
+
     require 'rubygems'
     require 'mechanize'
 
     Course.all.each do |course|
+      puts "    Crawling #{course.name}"
+
       agent = Mechanize.new
       hub = agent.get "https://alunoweb.ufba.br/SiacWWW/CurriculoCursoGradePublico.do?cdCurso=#{course.code}&nuPerCursoInicial=#{course.curriculum}"
 
@@ -110,7 +127,7 @@ namespace :crawler do
             pre_cd = CourseDiscipline.where(course: course, discipline: pre_discipline).first
 
             if (pre_cd.blank?)
-              puts "Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
+              puts "      Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
             else
               pr = PreRequisite.new
               pr.pre_discipline = pre_cd
@@ -121,6 +138,8 @@ namespace :crawler do
         end
       end
     end
+    puts '-> Finished pre-requisites crawling'
+    puts '-----------------------------------------------------------------------'
   end
 
 

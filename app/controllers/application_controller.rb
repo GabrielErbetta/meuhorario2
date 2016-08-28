@@ -2,12 +2,15 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def index
-    @courses = Course.all
+    @courses = Course.all.order(:name)
     @courses ||= []
   end
 
   def clear_db
-    call_rake 'db:reset'
+    CourseDiscipline.destroy_all
+    Discipline.destroy_all
+    Course.destroy_all
+
     redirect_to root_path
   end
 
@@ -38,6 +41,6 @@ class ApplicationController < ActionController::Base
   def call_rake(task, options = {})
     options[:rails_env] ||= Rails.env
     args = options.map { |n, v| "#{n.to_s.upcase}='#{v}'" }
-    system "rake #{task} #{args.join(' ')} >> #{Rails.root}/log/rake.log &"
+    system "rake #{task} #{args.join(' ')} >> #{Rails.root}/log/rake.log 2>&1 &"
   end
 end
