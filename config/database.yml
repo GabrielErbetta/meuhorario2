@@ -13,3 +13,12 @@ test:
   pool: 5
   username: meuhorario
   password: UbdTL3XB
+
+production:
+  adapter: postgresql
+  host: ENV["DB_IP"]
+  port: ENV["DB_PORT"]
+  database: meuhorario_production
+  pool: 5
+  username: ENV["DB_USER"]
+  password: ENV["DB_PASSWORD"]
