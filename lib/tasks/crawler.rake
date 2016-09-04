@@ -160,7 +160,7 @@ namespace :crawler do
 
 
   desc 'Crawl computer science classes page'
-  task :cs_classes => :environment do
+  task :cs_disciplines => :environment do
     course = Course.find_by_code '112'
     unless course
       course = Course.new
@@ -224,6 +224,84 @@ namespace :crawler do
             end
           end
         end
+      end
+    end
+  end
+
+
+  desc 'Crawl computer science classes page'
+  task :cs_classes => :environment do
+    course_code = '112'
+    course = Course.find_by_code '112'
+
+    require 'nokogumbo'
+
+    page = Nokogiri::HTML5.get 'https://twiki.ufba.br/twiki/pub/SUPAC/GradGuiaAreaI1/112.html'
+
+    body = page.search('body')
+    course_name = body.css('font')[1].text.split(': ')[1]
+    table = body.css('table')
+    rows = table.css('tr')
+
+    discipline = nil
+    class_n = nil
+    vacancies = nil
+    day = nil
+    time = nil
+    professor = nil
+
+    rows[7..-1].each do |row|
+      columns = row.css('td')
+
+      unless columns.blank?
+        discipline_text = columns[0].children[0].text
+        if discipline_text != ''
+          d_parts = discipline_text.split(' - ')
+          d_code = d_parts[0]
+
+          discipline = Discipline.find_by_code d_code
+
+          if discipline.nil?
+            discipline = Discipline.new
+            discipline.code = d_code
+            discipline.name = d_parts[1..-1].join(' - ')
+            discipline.save
+          end
+
+          class_n = columns[1].children[0].text unless columns[1].children[0].text == ''
+          puts class_n
+
+          vacancies = columns[2].children[0].text unless columns[2].children[0].text == ' '
+          puts vacancies
+
+          d_class = DisciplineClass.where(discipline: discipline, class_number: class_n).first
+          unless d_class
+            d_class = DisciplineClass.new
+            d_class.discipline = discipline
+            d_class.class_number = class_n
+            d_class.save
+          end
+
+          dc_offer = DisciplineClassOffer.where(course: course, discipline_class: d_class).first
+          puts "--------------#{dc_offer.inspect}"
+          unless dc_offer
+            dc_offer = DisciplineClassOffer.new
+            dc_offer.course = course
+            dc_offer.discipline_class = d_class
+            dc_offer.vacancies = vacancies
+            dc_offer.save
+            puts "--------------#{dc_offer.inspect}"
+          end
+        end
+
+        day = columns[3].children[0].text unless columns[3].children[0].text == ''
+        puts day
+
+        time = columns[4].children[0].text unless columns[4].children[0].text == ''
+        puts time
+
+        professor = columns[5].children[0].text unless columns[5].children[0].text == ''
+        puts professor
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160820170857) do
+ActiveRecord::Schema.define(version: 20160904203931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,20 @@ ActiveRecord::Schema.define(version: 20160820170857) do
     t.index ["code"], name: "index_courses_on_code", using: :btree
   end
 
+  create_table "discipline_class_offers", force: :cascade do |t|
+    t.integer "discipline_class_id"
+    t.integer "course_id"
+    t.integer "vacancies"
+    t.index ["course_id"], name: "index_discipline_class_offers_on_course_id", using: :btree
+    t.index ["discipline_class_id"], name: "index_discipline_class_offers_on_discipline_class_id", using: :btree
+  end
+
+  create_table "discipline_classes", force: :cascade do |t|
+    t.integer "discipline_id"
+    t.string  "class_number"
+    t.index ["discipline_id"], name: "index_discipline_classes_on_discipline_id", using: :btree
+  end
+
   create_table "disciplines", force: :cascade do |t|
     t.string   "code"
     t.string   "name"
@@ -55,6 +69,9 @@ ActiveRecord::Schema.define(version: 20160820170857) do
 
   add_foreign_key "course_disciplines", "courses"
   add_foreign_key "course_disciplines", "disciplines"
+  add_foreign_key "discipline_class_offers", "courses"
+  add_foreign_key "discipline_class_offers", "discipline_classes"
+  add_foreign_key "discipline_classes", "disciplines"
   add_foreign_key "pre_requisites", "course_disciplines", column: "post_discipline_id"
   add_foreign_key "pre_requisites", "course_disciplines", column: "pre_discipline_id"
 end

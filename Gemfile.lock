@@ -92,6 +92,8 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    nokogumbo (1.4.9)
+      nokogiri
     ntlm-http (0.1.1)
     pg (0.18.4)
     pkg-config (1.1.7)
@@ -177,6 +179,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   mechanize
+  nokogumbo
   pg
   puma (~> 3.0)
   rails (~> 5.0.0)

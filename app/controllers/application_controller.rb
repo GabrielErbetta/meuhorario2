@@ -15,13 +15,12 @@ class ApplicationController < ActionController::Base
   end
 
   def crawl_cs
-    call_rake 'crawler:cs_classes'
+    call_rake 'crawler:cs_disciplines'
     redirect_to root_path
   end
 
   def crawl_courses
     call_rake 'crawler:courses'
-    logger.debug "\ncrawling\n"
     redirect_to root_path
   end
 
