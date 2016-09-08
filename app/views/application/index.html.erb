@@ -6,12 +6,16 @@
 <br />
 <a href="<%= crawl_pre_reqs_path %>">Crawlear pré-requisitos</a>
 <br />
+<a href="<%= crawl_classes_path %>">Crawlear horários</a>
+<br />
 <br />
 <a href="<%= crawl_cs_path %>">Crawlear matérias + requisitos de ciência da computação</a>
+<br />
+<a href="<%= crawl_cs_classes_path %>">Crawlear horários de ciência da computação</a>
 <br />
 <br />
 <a href="<%= clear_db_path %>">Limpar database</a>
 
 <% @courses.each do |course| %>
-  <h3><a href="<%= course_page_path course.code %>"><%= course.name %></a></h3>
+  <h3><a href="<%= course_page_path course.code %>"><%= "#{course.code} #{course.name}" %></a></h3>
 <% end %>

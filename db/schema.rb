@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160904203931) do
+ActiveRecord::Schema.define(version: 20160907144414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "course_class_offers", force: :cascade do |t|
+    t.integer "course_id"
+    t.integer "discipline_class_offer_id"
+    t.index ["course_id"], name: "index_course_class_offers_on_course_id", using: :btree
+    t.index ["discipline_class_offer_id"], name: "index_course_class_offers_on_discipline_class_offer_id", using: :btree
+  end
 
   create_table "course_disciplines", force: :cascade do |t|
     t.integer  "semester"
@@ -38,9 +45,7 @@ ActiveRecord::Schema.define(version: 20160904203931) do
 
   create_table "discipline_class_offers", force: :cascade do |t|
     t.integer "discipline_class_id"
-    t.integer "course_id"
     t.integer "vacancies"
-    t.index ["course_id"], name: "index_discipline_class_offers_on_course_id", using: :btree
     t.index ["discipline_class_id"], name: "index_discipline_class_offers_on_discipline_class_id", using: :btree
   end
 
@@ -67,11 +72,35 @@ ActiveRecord::Schema.define(version: 20160904203931) do
     t.index ["pre_discipline_id"], name: "index_pre_requisites_on_pre_discipline_id", using: :btree
   end
 
+  create_table "professor_schedules", force: :cascade do |t|
+    t.integer "schedule_id"
+    t.integer "professor_id"
+    t.index ["professor_id"], name: "index_professor_schedules_on_professor_id", using: :btree
+    t.index ["schedule_id"], name: "index_professor_schedules_on_schedule_id", using: :btree
+  end
+
+  create_table "professors", force: :cascade do |t|
+    t.string "name"
+    t.index ["name"], name: "index_professors_on_name", using: :btree
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.integer "day"
+    t.integer "hour"
+    t.integer "minute"
+    t.integer "discipline_class_id"
+    t.index ["discipline_class_id"], name: "index_schedules_on_discipline_class_id", using: :btree
+  end
+
+  add_foreign_key "course_class_offers", "courses"
+  add_foreign_key "course_class_offers", "discipline_class_offers"
   add_foreign_key "course_disciplines", "courses"
   add_foreign_key "course_disciplines", "disciplines"
-  add_foreign_key "discipline_class_offers", "courses"
   add_foreign_key "discipline_class_offers", "discipline_classes"
   add_foreign_key "discipline_classes", "disciplines"
   add_foreign_key "pre_requisites", "course_disciplines", column: "post_discipline_id"
   add_foreign_key "pre_requisites", "course_disciplines", column: "pre_discipline_id"
+  add_foreign_key "professor_schedules", "professors"
+  add_foreign_key "professor_schedules", "schedules"
+  add_foreign_key "schedules", "discipline_classes"
 end

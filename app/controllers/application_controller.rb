@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def index
-    @courses = Course.all.order(:name)
+    @courses = Course.all.order(:code)
     @courses ||= []
   end
 
@@ -31,6 +31,16 @@ class ApplicationController < ActionController::Base
 
   def crawl_pre_reqs
     call_rake 'crawler:pre_requisites'
+    redirect_to root_path
+  end
+
+  def crawl_cs_classes
+    call_rake 'crawler:cs_classes'
+    redirect_to root_path
+  end
+
+  def crawl_classes
+    call_rake 'crawler:classes'
     redirect_to root_path
   end
 

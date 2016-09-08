@@ -40,6 +40,9 @@ class CoursesController < ApplicationController
     end
 
     @ops = @course.course_disciplines.where.not(nature: 'OB')
+
+
+    @dcos = @course.discipline_class_offers
   end
 
 end

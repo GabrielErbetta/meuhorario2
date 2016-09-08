@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   get 'crawl_disciplines' => 'application#crawl_disciplines', :as => 'crawl_disciplines'
   get 'crawl_pre_reqs' => 'application#crawl_pre_reqs', :as => 'crawl_pre_reqs'
   get 'crawl_cs' => 'application#crawl_cs', :as => 'crawl_cs'
+  get 'crawl_cs_classes' => 'application#crawl_cs_classes', :as => 'crawl_cs_classes'
+  get 'crawl_classes' => 'application#crawl_classes', :as => 'crawl_classes'
 end

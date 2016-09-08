@@ -17,6 +17,23 @@
       <p id="<%= op.discipline.code %>"><%= op.discipline.name %></p>
     <% end %>
 
+
+    <% @dcos.each do |dco| %>
+      <p>
+        <% dc = dco.discipline_class %>
+        <%= "#{dc.discipline.name} #{dc.class_number} #{dco.vacancies}" %>
+        <br/>
+        <% dc.schedules.each do |s| %>
+          <%= "#{s.day_friendly} - #{s.hour}:#{s.minute}" %>
+          <% s.professors.each do |p| %>
+            <%= p.name %>
+          <% end %>
+        <br/>
+        <% end %>
+      </p>
+    <% end %>
+
+
     <script>
       var disciplines = document.getElementsByClassName("discipline");
       var preRequisites  = <%= raw @pre  %>;
