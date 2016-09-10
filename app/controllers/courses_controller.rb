@@ -1,48 +1,49 @@
 class CoursesController < ApplicationController
 
   def show
-    @course = Course.find_by_code params[:code]
+    @course = Course.includes(
+      course_disciplines: [
+        { pre_requisites: [
+            { pre_discipline: :discipline },
+            { post_discipline: :discipline }
+          ],
+          post_requisites: [
+            { pre_discipline: :discipline },
+            { post_discipline: :discipline }
+          ]
+        },
+        :discipline
+      ]
+    ).find_by_code params[:code]
+
+    cds = @course.course_disciplines
 
     unless @course.nil?
       @semesters = []
       pre = {}
       post = {}
 
-      @course.course_disciplines.where(nature: 'OB').each do |cd|
-        if @semesters[cd.semester] == nil
-          @semesters[cd.semester] = [cd.discipline]
-        else
-          @semesters[cd.semester] << cd.discipline
-        end
+      cds.reject{ |cd| cd.nature != 'OB' }.each do |cd|
+        (@semesters[cd.semester] ||= []) << cd.discipline
 
         pre_requisites = cd.pre_requisites
         pre_requisites.each do |p|
-          if pre[cd.discipline.code] == nil
-            pre[cd.discipline.code] = [p.pre_discipline.discipline.code]
-          else
-            pre[cd.discipline.code] << p.pre_discipline.discipline.code
-          end
+          (pre[cd.discipline.code] ||= []) << p.pre_discipline.discipline.code
         end
 
         post_requisites = cd.post_requisites
         post_requisites.each do |p|
-          if post[cd.discipline.code] == nil
-            post[cd.discipline.code] = [p.post_discipline.discipline.code]
-          else
-            post[cd.discipline.code] << p.post_discipline.discipline.code
-          end
+          (post[cd.discipline.code] ||= []) << p.post_discipline.discipline.code
         end
-
-        require 'json'
-        @pre  = pre.to_json
-        @post = post.to_json
       end
+
+      @pre  = pre.to_json
+      @post = post.to_json
     end
 
-    @ops = @course.course_disciplines.where.not(nature: 'OB')
+    @ops = cds.reject{ |cd| cd.nature == 'OB' }
 
-
-    @dcos = @course.discipline_class_offers
+    @dcos = DisciplineClassOffer.includes(discipline_class: [{schedules: :professors}, :discipline]).where(id: @course.discipline_class_offer_ids)
 
     unless @dcos.blank?
       schedules = {}
