@@ -51,7 +51,9 @@ class CoursesController < ApplicationController
       @dcos.each do |dco|
         key = "#{dco.discipline_class.discipline.code}-#{dco.discipline_class.class_number}"
         dco.discipline_class.schedules.each do |schedule|
-          (schedules[key] ||= []) << schedule.day * 100 + schedule.daytime_number unless schedule.day == 0
+          schedule.class_count.times do |i|
+            (schedules[key] ||= []) << schedule.day * 100 + schedule.first_class_number + i unless schedule.day == 0
+          end
         end
       end
     end

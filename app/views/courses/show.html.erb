@@ -26,7 +26,8 @@
             <%= "#{dc.discipline.code} - #{dc.discipline.name} #{dc.class_number} #{dco.vacancies}" %>
             <br/>
             <% dc.schedules.each do |s| %>
-              <%= "#{s.day_friendly} - #{s.hour}:#{s.minute} - #{s.daytime_number}" %>
+              <%= "#{s.day_friendly} - #{s.start_hour}:#{s.start_minute} às #{s.end_hour}:#{s.end_minute} (#{s.class_count} aulas começando em #{s.first_class_number})" %>
+              <br/>
               <% s.professors.each do |p| %>
                 <%= p.name %>
               <% end %>

@@ -362,6 +362,9 @@ namespace :crawler do
     require 'rubygems'
     require 'mechanize'
 
+    puts '-----------------------------------------------------------------------'
+    puts '-> Starting classes crawling...'
+
     days = ['CMB', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM']
 
     agent = Mechanize.new
@@ -383,20 +386,16 @@ namespace :crawler do
         Course.where('code LIKE ?', "#{course_code}%").each { |c| (course_hash[course_code] ||= []) << c }
 
         course_hash.each do |course_code, courses|
+          puts "-> Crawling #{course_code}"
           body = page.search('body')
           course_name = body.css('font')[1].text.split(': ')[1]
           table = body.css('table')
           rows = table.css('tr')
 
           discipline = nil
-          class_n = nil
           d_class = nil
-          vacancies = nil
-          day = nil
           day_number = nil
-          time = nil
-          professor = nil
-          schedules = []
+          schedule = nil
 
           rows[7..-1].each do |row|
             columns = row.css('td')
@@ -450,36 +449,46 @@ namespace :crawler do
                 day_number = days.index day
               end
 
-              n_classes = 0
               if columns[4].children[0].text != ''
-                schedules = []
+                unless day_number == 0
+                  times = columns[4].children[0].text.split ' às '
+                  start_time = times[0].split ':'
+                  start_hour = start_time[0].to_i
+                  start_minute = start_time[1].to_i
 
-                times = columns[4].children[0].text.split ' às '
-                start_time = times[0].split ':'
-                start_hour = start_time[0].to_i
-                start_minute = start_time[1].to_i
-
-                if day_number == 0
-                  n_classes = 1
-                else
                   end_time = times[1].split ':'
                   end_hour = end_time[0].to_i
                   end_minute = end_time[1].to_i
 
                   n_classes = ((end_hour - start_hour) * 60 + (end_minute - start_minute)) / 55
-                end
-              end
 
-              schedule = Schedule.where(discipline_class: d_class, day: day_number, hour: start_hour, minute: start_minute).first
-              unless schedule
-                n_classes.times do |i|
+                  first_class_number = (start_hour * 60) - (7 * 60) + start_minute
+                  first_class_number -= 30 if start_hour > 12
+                  first_class_number /= 55
+                  first_class_number += 1
+                end
+
+                schedule = Schedule.where(discipline_class: d_class, day: day_number, start_hour: start_hour, start_minute: start_minute).first
+                unless schedule
                   schedule = Schedule.new
                   schedule.day = day_number
-                  schedule.hour = start_hour + ((i * 55 + start_minute) / 60)
-                  schedule.minute = (start_minute + i * 55) % 60
+                  if day_number != 0
+                    schedule.start_hour = start_hour
+                    schedule.start_minute = start_minute
+                    schedule.end_hour = end_hour
+                    schedule.end_minute = end_minute
+                    schedule.first_class_number = first_class_number
+                    schedule.class_count = n_classes
+                  else
+                    schedule.start_hour = 0
+                    schedule.start_minute = 0
+                    schedule.end_hour = 0
+                    schedule.end_minute = 0
+                    schedule.first_class_number = 0
+                    schedule.class_count = 0
+                  end
                   schedule.discipline_class = d_class
                   schedule.save
-                  schedules << schedule
                 end
               end
 
@@ -491,19 +500,19 @@ namespace :crawler do
                 professor.save
               end
 
-              schedules.each do |schedule|
-                professor_schedule = ProfessorSchedule.where(schedule: schedule, professor: professor).first
-                unless professor_schedule
-                  professor_schedule = ProfessorSchedule.new
-                  professor_schedule.schedule = schedule
-                  professor_schedule.professor = professor
-                  professor_schedule.save
-                end
+              professor_schedule = ProfessorSchedule.where(schedule: schedule, professor: professor).first
+              unless professor_schedule
+                professor_schedule = ProfessorSchedule.new
+                professor_schedule.schedule = schedule
+                professor_schedule.professor = professor
+                professor_schedule.save
               end
             end
           end
         end
       end
     end
+    puts '-> Finished classes crawling'
+    puts '-----------------------------------------------------------------------'
   end
 end
