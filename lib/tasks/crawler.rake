@@ -45,7 +45,7 @@ namespace :crawler do
     require 'rubygems'
     require 'mechanize'
 
-    Course.all.order(:name).each do |course|
+    Course.all.order(:code).each do |course|
       puts "    Crawling #{course.name}"
 
       agent = Mechanize.new
@@ -101,7 +101,7 @@ namespace :crawler do
     require 'rubygems'
     require 'mechanize'
 
-    Course.all.order(:name).each do |course|
+    Course.all.order(:code).each do |course|
       puts "    Crawling #{course.name}"
 
       agent = Mechanize.new
@@ -141,9 +141,9 @@ namespace :crawler do
               pre_discipline = Discipline.find_by_code requisite
               pre_cd = CourseDiscipline.where(course: course, discipline: pre_discipline).first
 
-              if (pre_cd.blank?)
+              if pre_cd.blank?
                 puts "      Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
-              else
+              elsif pre_cd.semester.nil? or pre_cd.semester != course_discipline.semester
                 pr = PreRequisite.new
                 pr.pre_discipline = pre_cd
                 pr.post_discipline = course_discipline
