@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   get 'crawl_cs' => 'application#crawl_cs', :as => 'crawl_cs'
   get 'crawl_cs_classes' => 'application#crawl_cs_classes', :as => 'crawl_cs_classes'
   get 'crawl_classes' => 'application#crawl_classes', :as => 'crawl_classes'
+  get 'titleize_disciplines' => 'application#titleize_disciplines', :as => 'titleize_disciplines'
 end

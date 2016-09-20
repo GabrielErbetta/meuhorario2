@@ -44,6 +44,10 @@ class ApplicationController < ActionController::Base
     redirect_to root_path
   end
 
+  def titleize_disciplines
+    call_rake 'crawler:titleize'
+    redirect_to root_path
+  end
 
   private
 
