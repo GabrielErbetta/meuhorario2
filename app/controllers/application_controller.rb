@@ -2,10 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def index
-    @courses = {}
-
-    courses = Course.all.order(:code)
-    courses.each { |c| (@courses[c.code[0].to_i] ||= []) << c}
+    @areas = Area.all
   end
 
   def clear_db

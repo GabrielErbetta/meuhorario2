@@ -60,5 +60,4 @@ class CoursesController < ApplicationController
 
     @schedules = schedules.to_json
   end
-
 end

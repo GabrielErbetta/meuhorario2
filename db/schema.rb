@@ -10,10 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160910191048) do
+ActiveRecord::Schema.define(version: 20161012173627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "areas", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+  end
 
   create_table "course_class_offers", force: :cascade do |t|
     t.integer "course_id"
@@ -36,10 +41,11 @@ ActiveRecord::Schema.define(version: 20160910191048) do
   create_table "courses", force: :cascade do |t|
     t.string   "name"
     t.string   "code"
-    t.integer  "area"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "curriculum"
+    t.integer  "area_id"
+    t.index ["area_id"], name: "index_courses_on_area_id", using: :btree
     t.index ["code"], name: "index_courses_on_code", using: :btree
   end
 

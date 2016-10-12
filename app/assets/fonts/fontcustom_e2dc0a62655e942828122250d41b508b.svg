@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2016-10-11: Created.
+-->
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>
+Created by FontForge 20120731 at Tue Oct 11 23:23:52 2016
+ By Erbetta,,,
+Created by Erbetta,,, with FontForge 2.0 (http://fontforge.sf.net)
+</metadata>
+<defs>
+<font id="fontcustom" horiz-adv-x="200" >
+  <font-face 
+    font-family="fontcustom"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="512"
+    panose-1="2 0 6 3 0 0 0 0 0 0"
+    ascent="448"
+    descent="-64"
+    bbox="0.000244141 -63.1045 512.002 447.105"
+    underline-thickness="25.6"
+    underline-position="-51.2"
+    unicode-range="U+0020-F100"
+  />
+    <missing-glyph />
+    <glyph glyph-name="space" unicode=" " 
+ />
+    <glyph glyph-name="uniF100" unicode="&#xf100;" horiz-adv-x="512" 
+d="M10.7412 -6.41602l133.67 133.669c-23.8701 33.418 -38.1914 73.9971 -38.1914 116.962c0 112.188 90.7041 202.891 202.891 202.891c112.186 0 202.892 -90.7051 202.892 -202.891c0 -112.187 -90.7051 -202.891 -202.891 -202.891
+c-42.9648 0 -83.5439 14.3213 -116.962 38.1914l-133.669 -133.67c-11.9346 -11.9336 -33.417 -11.9336 -47.7393 0v0c-14.3213 14.3213 -14.3213 33.418 0 47.7383zM309.111 89.0625c85.9297 0 155.151 69.2217 155.151 155.151s-69.2217 155.151 -155.151 155.151
+c-85.9307 0 -155.151 -69.2217 -155.151 -155.151c-0.000976562 -85.9297 69.2207 -155.151 155.151 -155.151z" />
+  </font>
+</defs></svg>

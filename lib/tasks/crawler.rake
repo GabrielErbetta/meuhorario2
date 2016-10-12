@@ -27,7 +27,6 @@ namespace :crawler do
         course = Course.new
         course.code = code
         course.name = a.text
-        course.area = code[0].to_i
         course.curriculum = curriculum
         course.save
       end
@@ -383,6 +382,8 @@ namespace :crawler do
         course_code = guide_urls[index].split('/')[-1]
         course_code.slice! '.html'
 
+        course_code = '316' if course_code == '301'
+
         Course.where('code LIKE ?', "#{course_code}%").each { |c| (course_hash[course_code] ||= []) << c }
 
         course_hash.each do |course_code, courses|
@@ -519,8 +520,6 @@ namespace :crawler do
   desc 'Downcase and capitalize discipline names and upcase roman numbers'
   task :titleize => :environment do
     puts '-----------------------------------------------------------------------'
-    puts '-> Starting titleizing disciplines...'
-
     uncapitalized = [
       'de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 'uma', 'os', 'no',
       'se', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi', 'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou',
@@ -542,8 +541,22 @@ namespace :crawler do
       'tivessem', 'tiver', 'tivermos', 'tiverem', 'terei', 'terá', 'teremos', 'terão', 'teria', 'teríamos', 'teriam'
     ]
 
-    disciplines = Discipline.all
+    puts '-> Starting titleizing courses...'
+    courses = Course.all
+    courses.each do |course|
+      name = course.name.mb_chars.downcase.to_s
 
+      name.gsub!(/[\p{L}]+/) { |match| uncapitalized.include?(match) ? match : match.mb_chars.capitalize.to_s }
+      name.gsub!(/(\b)(i|ii|iii|iv|v|vi|vii|viii|ix|x|b|c|d|f|g|h)(\b)|((\b)(a|e)$)/i) { |match| match.upcase }
+
+      course.name = name
+      course.save
+    end
+    puts '-> Finished'
+
+
+    puts '-> Starting titleizing disciplines...'
+    disciplines = Discipline.all
     disciplines.each do |discipline|
       name = discipline.name.mb_chars.downcase.to_s
 
@@ -553,7 +566,58 @@ namespace :crawler do
       discipline.name = name
       discipline.save
     end
+    puts '-> Finished'
 
+    puts '-----------------------------------------------------------------------'
+  end
+
+  desc 'Downcase and capitalize discipline names and upcase roman numbers'
+  task :areas => :environment do
+    require 'nokogumbo'
+    require 'rubygems'
+    require 'mechanize'
+
+    puts '-----------------------------------------------------------------------'
+    puts '-> Starting areas crawling...'
+    agent = Mechanize.new
+    hub = agent.get "http://www.twiki.ufba.br/twiki/bin/view/SUPAC/MatriculaGraduacaoColegiado1"
+    areas = hub.search('a.twikiLink').select{ |a| a['href'].include? 'GradGuia' }
+
+    areas.each do |a|
+      area_text = a.text.split ' - '
+
+      if area_text[0].include? 'Bacharelados Interdisciplinares'
+        name = 'BI'
+        description = area_text[0]
+      else
+        name = area_text[0]
+        description = area_text[1]
+      end
+
+      area = Area.where(name: name).first
+      unless area
+        area = Area.new
+        area.name = name
+        area.description = description
+        area.save
+      end
+
+      area_hub = agent.get a['href']
+      guides_table = area_hub.search('table#table1')
+      guide_urls = guides_table.css('a').map { |a| a['href'] }
+
+      guide_urls.each do |guide_url|
+        course_code = guide_url.split('/')[-1]
+        course_code.slice! '.html'
+
+        course_code = '316' if course_code == '301'
+
+        Course.where('code LIKE ?', "#{course_code}%").each do |course|
+          course.area = area
+          course.save
+        end
+      end
+    end
 
     puts '-> Finished'
     puts '-----------------------------------------------------------------------'

@@ -15,4 +15,5 @@
 //= require turbolinks
 //= require what-input
 //= require foundation
+//= require diacritics
 //= require_tree .

@@ -1,0 +1,37 @@
+<%= render 'shared/header' %>
+
+<div id="coursesContent" class="courses-content">
+  <div class="row">
+    <div id="coursesInfoText" class="small-12 columns text-center info-text"><%= @name + ' - ' + @description %></div>
+  </div>
+
+  <div class="row courses-block">
+    <span><i class="icon-search"></i></span>
+    <input id="coursesFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Digite o nome do seu curso" />
+
+    <div id="coursesList" class="courses-list">
+      <% @courses.each do |course| %>
+        <a class="course" href="<%= course_page_path course.code %>"><%= "#{course.code} - #{course.name}" %></a>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<% content_for :script do %>
+<script>
+  var filterCourses = function(filter) {
+    $(".course").each(function(i, a) {
+      var text = a.text;
+
+      if (removeDiacritics(text.toLowerCase()).includes(removeDiacritics(filter.toLowerCase())))
+        a.style.display = 'block';
+      else
+        a.style.display = 'none';
+    });
+  }
+
+  $("#coursesFilterInput").on("input", function() {
+    filterCourses($(this).val());
+  });
+</script>
+<% end %>

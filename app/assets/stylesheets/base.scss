@@ -1,7 +1,42 @@
+@import 'https://fonts.googleapis.com/css?family=Raleway';
+
+
+$font_color: #424242;
+$light_gray: #F8F8F8;
+$gray: darken(#F8F8F8, 20%);
+$dark_gray: darken(#F8F8F8, 30%);
+
+
+body {
+  font-family: 'Raleway', sans-serif !important;
+  color: $font_color;
+}
+
 .no-padding {
   padding: 0 !important;
 }
 
 .no-margin {
   margin: 0 !important;
+}
+
+.header {
+  padding-top: 5%;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #BBB;
+  margin-bottom: 20px;
+}
+
+
+@mixin transition() {
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+@mixin box-shadow($radius) {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,$radius);
+  -moz-box-shadow:    0px 0px 5px 0px rgba(0,0,0,$radius);
+  box-shadow:         0px 0px 5px 0px rgba(0,0,0,$radius);
 }
