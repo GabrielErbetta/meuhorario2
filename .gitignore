@@ -22,3 +22,7 @@
 
 # Ignore 'untracked' folder
 /untracked/*
+
+# Ignore server files
+/shared/*
+.rbenv-vars
