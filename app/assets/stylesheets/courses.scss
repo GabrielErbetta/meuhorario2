@@ -1,0 +1,51 @@
+@import 'base';
+
+.column-title {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.semester {
+  line-height: 90px;
+
+  .number {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+  }
+}
+
+.discipline {
+  float: left;
+  padding-right: 5px;
+  padding-left: 5px;
+  height: 90px;
+  max-width: 20%;
+  border: 1px solid $light_gray;
+  background-color: $gray;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 90px;
+
+  .name {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    word-wrap: break-word;
+  }
+}
+
+
+
+@media only screen and (max-width: 40em) {
+  .discipline {
+    min-width: 50%;
+  }
+}
+
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  .discipline {
+    min-width: 20%;
+  }
+}
+

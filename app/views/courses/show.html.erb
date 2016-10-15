@@ -1,124 +1,76 @@
-<% if @course %>
-  <h1><%= @course.name %></h1>
-  <h2><%= @course.curriculum %></h2>
+<%= stylesheet_link_tag 'courses' %>
+
+
+<%= render 'shared/header' %>
+
+<div class="row">
+  <div class="small-12 columns text-center info-text">Monte a sua grade</div>
+</div>
+
+<div class="row block">
+  <div class="row">
+    <div class="small-4 medium-1 columns text-center no-padding column-title">
+      Semestre
+    </div>
+    <div class="small-8 medium-11 columns text-center column-title">
+      Disciplinas
+    </div>
+  </div>
 
   <% unless @semesters.blank? %>
+    <% width = 100.0 / @semesters.max_by{ |s| s ? s.size : 0 }.size %>
     <% @semesters[1..-1].each_with_index do |semester, i| %>
-      <div style="width: 160px; display: inline-block; vertical-align: top;">
-        <p style="width: 160px; display: inline-block; text-align: center;"><%= i + 1 %></p>
-        <% if semester %>
-          <% semester.each do |discipline| %>
-            <div id="<%= discipline.code %>" class="discipline" style="height: 100px; width: 150px; background-color: lightgray; display:flex; justify-content:center; align-items:center; margin: 5px; cursor: pointer; text-align: center; vertical-align: top;"><%= discipline.name %></div>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
+      <% if semester %>
+        <div class="row">
+          <div class="small-4 medium-1 columns text-center no-padding semester">
+            <span class="number"><%= i + 1 %></span>
+          </div>
 
-    <% @ops.each do |op| %>
-      <p id="<%= op.discipline.code %>"><%= op.discipline.name %></p>
-    <% end %>
-
-    <% unless @dcos.blank? %>
-      <% @dcos.each do |dco| %>
-        <div style="margin-top: 20px;">
-          <a id="<%= "#{dco.discipline_class.discipline.code}-#{dco.discipline_class.class_number}" %>" class="discipline-class" style="cursor: pointer;">
-            <% dc = dco.discipline_class %>
-            <%= "#{dc.discipline.code} - #{dc.discipline.name} #{dc.class_number} #{dco.vacancies}" %>
-            <br/>
-            <% dc.schedules.each do |s| %>
-              <%= "#{s.day_friendly} - #{s.start_hour}:#{s.start_minute} às #{s.end_hour}:#{s.end_minute} (#{s.class_count} aulas começando em #{s.first_class_number})" %>
-              <br/>
-              <% s.professors.each do |p| %>
-                <%= p.name %>
-              <% end %>
-            <br/>
+          <div class="small-8 medium-11 columns">
+            <% semester.each do |discipline| %>
+              <div id="<%= discipline.code %>" class="discipline text-center" style="width: <%= width %>%;">
+                <div class="name"><%= discipline.name %></div>
+              </div>
             <% end %>
-          </a>
+          </div>
         </div>
       <% end %>
-
-      <%= render 'schedule_table' %>
-
     <% end %>
-
-    <script>
-      var disciplines    = document.getElementsByClassName("discipline");
-      var classes        = document.getElementsByClassName("discipline-class")
-      var preRequisites  = <%= raw @pre  %>;
-      var postRequisites = <%= raw @post %>;
-      var schedules = <%= raw @schedules %>;
-      var selectedClasses = [];
-
-      function changeBorders(code, colorPre, colorPost) {
-        return function() {
-          if (preRequisites[code]) {
-            preRequisites[code].forEach(function(preReq) {
-              document.getElementById(preReq).style.backgroundColor = colorPre;
-            });
-          }
-
-          if (postRequisites[code]) {
-            postRequisites[code].forEach(function(postReq) {
-              document.getElementById(postReq).style.backgroundColor = colorPost;
-            });
-          }
-        };
-      }
-
-      function addDisciplineClass(id) {
-        return function() {
-          var d, t, cellId, cell, cellSchedule;
-          if (selectedClasses.indexOf(id) == -1) {
-            selectedClasses.push(id);
-            document.getElementById(id).style.backgroundColor = "lightblue";
-
-            schedules[id].forEach(function(daytime_number, i) {
-              d = Math.floor(daytime_number / 100);
-              t = daytime_number % 100;
-              cellId = "d" + d + "t" + t;
-
-              cell = document.getElementById(cellId);
-              if (cell.innerHTML != '')
-                cell.style.backgroundColor = "red";
-
-              cell.innerHTML += "<div  id='" + id + "-" + i + "' style='font-size: 10px; line-height: 2;'>" + id + "</div>";
-            });
-          }
-          else {
-            selectedClasses.splice(selectedClasses.indexOf(id), 1);
-            document.getElementById(id).style.backgroundColor = null;
-
-            schedules[id].forEach(function(daytime_number, i) {
-              d = Math.floor(daytime_number / 100);
-              t = daytime_number % 100;
-              cellId = "d" + d + "t" + t;
-
-              cell = document.getElementById(cellId);
-              cellSchedule = document.getElementById(id + "-" + i);
-              cell.removeChild(cellSchedule);
-
-              if (cell.childNodes.length == 1) {
-                cell.style.backgroundColor = null;
-              }
-            });
-          }
-        }
-      }
-
-      for (var i = 0; i < disciplines.length; i++) {
-        var code = disciplines[i].id;
-        if (preRequisites[code] || postRequisites[code]) {
-          disciplines[i].addEventListener("mouseover", changeBorders(code, "#FF8A65", "#81C784"));
-          disciplines[i].addEventListener("mouseout", changeBorders(code, "lightgray", "lightgray"));
-        }
-      }
-
-      for (var i = 0; i < classes.length; i++) {
-        var discipline_class = classes[i];
-        discipline_class.addEventListener("click", addDisciplineClass(discipline_class.id));
-      }
-    </script>
   <% end %>
-<% else %>
-  <h1>Curso não cadastrado</h1>
+</div>
+
+<% content_for :script do %>
+<script>
+  var disciplines    = document.getElementsByClassName("discipline");
+  var preRequisites  = <%= raw @pre  %>;
+  var postRequisites = <%= raw @post %>;
+
+  function changeBgColor(code, colorPre, colorPost) {
+    return function() {
+      if (preRequisites[code]) {
+        preRequisites[code].forEach(function(preReq) {
+          if (document.getElementById(preReq))
+            document.getElementById(preReq).style.backgroundColor = colorPre;
+        });
+      }
+
+      if (postRequisites[code]) {
+        postRequisites[code].forEach(function(postReq) {
+          if (document.getElementById(postReq))
+            document.getElementById(postReq).style.backgroundColor = colorPost;
+        });
+      }
+    };
+  }
+
+  for (var i = 0; i < disciplines.length; i++) {
+    disciplines[i].addEventListener("mouseover", function() { this.style.backgroundColor = "#C5C5F5" });
+    disciplines[i].addEventListener("mouseout", function() { this.style.backgroundColor = "#C5C5C5" });
+    var code = disciplines[i].id;
+    if (preRequisites[code] || postRequisites[code]) {
+      disciplines[i].addEventListener("mouseover", changeBgColor(code, "#F5C5C5", "#C5F5C5"));
+      disciplines[i].addEventListener("mouseout", changeBgColor(code, "#C5C5C5", "#C5C5C5"));
+    }
+  }
+</script>
 <% end %>

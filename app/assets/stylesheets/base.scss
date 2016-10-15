@@ -7,6 +7,22 @@ $gray: darken(#F8F8F8, 20%);
 $dark_gray: darken(#F8F8F8, 30%);
 
 
+
+@mixin transition() {
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+@mixin box-shadow($radius) {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,$radius);
+  -moz-box-shadow:    0px 0px 5px 0px rgba(0,0,0,$radius);
+  box-shadow:         0px 0px 5px 0px rgba(0,0,0,$radius);
+}
+
+
+
 body {
   font-family: 'Raleway', sans-serif !important;
   color: $font_color;
@@ -27,16 +43,19 @@ body {
   margin-bottom: 20px;
 }
 
-
-@mixin transition() {
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -o-transition: all 0.2s;
-  transition: all 0.2s;
+.info-text {
+  font-size: 28px;
+  font-weight: 600;
 }
 
-@mixin box-shadow($radius) {
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,$radius);
-  -moz-box-shadow:    0px 0px 5px 0px rgba(0,0,0,$radius);
-  box-shadow:         0px 0px 5px 0px rgba(0,0,0,$radius);
+.block {
+  @include box-shadow(0.1);
+  margin-top: 20px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 40px;
+  padding-top: 40px;
+  border: 1px solid #EEE;
+  border-radius: 5px;
+  background-color: $light_gray;
 }

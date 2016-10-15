@@ -1,10 +1,5 @@
 @import 'base';
 
-.info-text {
-  font-size: 28px;
-  font-weight: 600;
-}
-
 .area-grid {
   .columns {
     padding: 20px;
@@ -12,13 +7,13 @@
     .area-card {
       @include transition();
       display: block;
-      height: 160px;
-      line-height: 160px;
       padding-left: 10px;
       padding-right: 10px;
+      height: 160px;
+      min-width: 160px;
+      line-height: 160px;
       background-color: $light_gray;
       color: $font_color;
-      min-width: 160px;
 
       &:hover {
         background-color: darken($light_gray, 10%);
@@ -38,7 +33,6 @@
         }
 
         .text {
-          display: block;
           font-size: 16px;
           line-height: 20px;
         }

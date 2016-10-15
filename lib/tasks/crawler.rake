@@ -562,6 +562,7 @@ namespace :crawler do
 
       name.gsub!(/[\p{L}]+/) { |match| uncapitalized.include?(match) ? match : match.mb_chars.capitalize.to_s }
       name.gsub!(/(\b)(i|ii|iii|iv|v|vi|vii|viii|ix|x|b|c|d|f|g|h)(\b)|((\b)(a|e)$)/i) { |match| match.upcase }
+      name.gsub!(/[\;\:\.\,\_\&\*\?\/\\]\S/) { |match| match[0] + ' ' + match[1] }
 
       discipline.name = name
       discipline.save
