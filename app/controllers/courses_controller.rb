@@ -13,7 +13,10 @@ class CoursesController < ApplicationController
           ]
         },
         :discipline
-      ]
+      ],
+      discipline_class_offers: {
+        discipline_class: :discipline
+      }
     ).find_by_code params[:code]
 
     cds = @course.course_disciplines
@@ -41,23 +44,7 @@ class CoursesController < ApplicationController
       @post = post.to_json
     end
 
-    @ops = cds.reject{ |cd| cd.nature == 'OB' }
-
-    @dcos = DisciplineClassOffer.includes(discipline_class: [{schedules: :professors}, :discipline]).where(id: @course.discipline_class_offer_ids)
-
-    unless @dcos.blank?
-      schedules = {}
-
-      @dcos.each do |dco|
-        key = "#{dco.discipline_class.discipline.code}-#{dco.discipline_class.class_number}"
-        dco.discipline_class.schedules.each do |schedule|
-          schedule.class_count.times do |i|
-            (schedules[key] ||= []) << schedule.day * 100 + schedule.first_class_number + i unless schedule.day == 0
-          end
-        end
-      end
-    end
-
-    @schedules = schedules.to_json
+    @ops     = cds.reject{ |cd| cd.nature == 'OB' }.map{ |cd| cd.discipline }
+    @offered = @course.discipline_class_offers.map{ |dco| dco.discipline_class.discipline }.uniq
   end
 end

@@ -46,11 +46,11 @@ body {
 .info-text {
   font-size: 28px;
   font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .block {
   @include box-shadow(0.1);
-  margin-top: 20px;
   padding-left: 60px;
   padding-right: 60px;
   padding-bottom: 40px;
@@ -58,4 +58,33 @@ body {
   border: 1px solid #EEE;
   border-radius: 5px;
   background-color: $light_gray;
+}
+
+.button {
+  height: 50px;
+  border-radius: 5px;
+  background-color: $dark_gray;
+  font-size: 16px;
+  font-weight: 600;
+
+  &:hover, &:focus, &:active {
+    background-color: darken($dark_gray, 10%);
+  }
+}
+
+.error {
+  border: 1px solid red !important;
+}
+
+
+
+@media only screen and (max-width: 40em) {
+  li, input {
+    font-size: 14px !important;
+  }
+
+  .block {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

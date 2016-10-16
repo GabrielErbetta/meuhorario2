@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   get 'curso/:code' => 'courses#show', :as => 'course_page'
 
+  get 'disciplinas/buscar' => 'disciplines#ajax_search', :as => 'discipline_ajax_search'
+
   get 'admin' => 'admin#index'
   get 'crawl_courses' => 'admin#crawl_courses', :as => 'crawl_courses'
   get 'crawl_areas' => 'admin#crawl_areas', :as => 'crawl_areas'

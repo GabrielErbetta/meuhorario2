@@ -1,49 +1,99 @@
-<%= stylesheet_link_tag 'courses' %>
-
-
 <%= render 'shared/header' %>
 
 <div class="row">
   <div class="small-12 columns text-center info-text">Monte a sua grade</div>
 </div>
 
-<div class="row block">
-  <div class="row">
-    <div class="small-4 medium-1 columns text-center no-padding column-title">
-      Semestre
-    </div>
-    <div class="small-8 medium-11 columns text-center column-title">
-      Disciplinas
-    </div>
-  </div>
+<div class="row">
+  <ul id="blockTabs" class="tabs" data-tabs>
+    <li class="tabs-title is-active" aria-selected="true"><a href="#mandatory">Obrigatórias</a></li>
+    <li class="tabs-title"><a href="#elective">Optativas</a></li>
+    <li class="tabs-title"><a href="#offered">Ofertadas</a></li>
+    <li class="tabs-title"><a href="#all">Todas</a></li>
+  </ul>
+</div>
 
-  <% unless @semesters.blank? %>
-    <% width = 100.0 / @semesters.max_by{ |s| s ? s.size : 0 }.size %>
-    <% @semesters[1..-1].each_with_index do |semester, i| %>
-      <% if semester %>
-        <div class="row">
-          <div class="small-4 medium-1 columns text-center no-padding semester">
-            <span class="number"><%= i + 1 %></span>
-          </div>
+<div class="row block tabs-content" data-tabs-content="blockTabs">
+  <div id="mandatory" class="tabs-panel no-padding is-active">
+    <div class="row">
+      <div class="small-4 medium-1 columns text-center no-padding column-title">
+        Semestre
+      </div>
+      <div class="small-8 medium-11 columns text-center column-title">
+        Disciplinas
+      </div>
+    </div>
 
-          <div class="small-8 medium-11 columns">
-            <% semester.each do |discipline| %>
-              <div id="<%= discipline.code %>" class="discipline text-center" style="width: <%= width %>%;">
-                <div class="name"><%= discipline.name %></div>
-              </div>
-            <% end %>
+    <% unless @semesters.blank? %>
+      <% width = 100.0 / @semesters.max_by{ |s| s ? s.size : 0 }.size %>
+      <% @semesters[1..-1].each_with_index do |semester, i| %>
+        <% if semester %>
+          <div class="row">
+            <div class="small-4 medium-1 columns text-center no-padding semester">
+              <span class="number"><%= i + 1 %></span>
+            </div>
+
+            <div class="small-8 medium-11 columns">
+              <% semester.each do |discipline| %>
+                <div id="<%= discipline.code %>" class="block-discipline discipline text-center" style="width: <%= width %>%;">
+                  <div class="text">
+                    <div class="code"><%= discipline.code %></div>
+                    <div class="name"><%= discipline.name %></div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
           </div>
-        </div>
+        <% end %>
       <% end %>
     <% end %>
-  <% end %>
+  </div>
+
+  <div id="elective" class="tabs-panel no-padding">
+    <div class="search">
+      <i class="icon-search"></i>
+      <input id="electiveFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
+    </div>
+
+    <ul class="block-list">
+      <% @ops.each do |op| %>
+        <li class="block-list-item list-item-discipline elective-discipline"><%= "#{op.code} - #{op.name}" %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div id="offered" class="tabs-panel no-padding">
+    <div class="search">
+      <i class="icon-search"></i>
+      <input id="offeredFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
+    </div>
+
+    <ul class="block-list">
+      <% @offered.each do |offered| %>
+        <li class="block-list-item list-item-discipline offered-discipline"><%= "#{offered.code} - #{offered.name}" %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div id="all" class="tabs-panel no-padding row">
+    <div class="search small-12 medium-10 columns">
+      <i class="icon-search"></i>
+      <input id="allinput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
+    </div>
+    <div class="small-12 medium-2 columns">
+      <button id="buttonS" type="submit" class="button expanded">Buscar</button>
+    </div>
+
+    <ul id="allBlockList" class="block-list">
+    </ul>
+  </div>
 </div>
 
 <% content_for :script do %>
 <script>
-  var disciplines    = document.getElementsByClassName("discipline");
-  var preRequisites  = <%= raw @pre  %>;
-  var postRequisites = <%= raw @post %>;
+  var blockDisciplines    = document.getElementsByClassName("block-discipline");
+  var preRequisites       = <%= raw @pre  %>;
+  var postRequisites      = <%= raw @post %>;
 
   function changeBgColor(code, colorPre, colorPost) {
     return function() {
@@ -63,14 +113,33 @@
     };
   }
 
-  for (var i = 0; i < disciplines.length; i++) {
-    disciplines[i].addEventListener("mouseover", function() { this.style.backgroundColor = "#C5C5F5" });
-    disciplines[i].addEventListener("mouseout", function() { this.style.backgroundColor = "#C5C5C5" });
-    var code = disciplines[i].id;
+  for (var i = 0; i < blockDisciplines.length; i++) {
+    blockDisciplines[i].addEventListener("mouseover", function() { this.style.backgroundColor = "#C5C5F5" });
+    blockDisciplines[i].addEventListener("mouseout", function() { this.style.backgroundColor = "#C5C5C5" });
+    var code = blockDisciplines[i].id;
     if (preRequisites[code] || postRequisites[code]) {
-      disciplines[i].addEventListener("mouseover", changeBgColor(code, "#F5C5C5", "#C5F5C5"));
-      disciplines[i].addEventListener("mouseout", changeBgColor(code, "#C5C5C5", "#C5C5C5"));
+      blockDisciplines[i].addEventListener("mouseover", changeBgColor(code, "#F5C5C5", "#C5F5C5"));
+      blockDisciplines[i].addEventListener("mouseout", changeBgColor(code, "#C5C5C5", "#C5C5C5"));
     }
   }
+
+  $("#electiveFilterInput").on("input", function() {
+    filterList("elective-discipline", $(this).val());
+  });
+
+  $("#offeredFilterInput").on("input", function() {
+    filterList("offered-discipline", $(this).val());
+  });
+
+  $("#buttonS").click(function() {
+    var pattern = $("#allinput").val();
+    if (pattern.length == 0)
+      $("#allinput").addClass("error");
+    else {
+      $("#allinput").removeClass("error");
+      $("#allBlockList").empty();
+      $.get("<%= discipline_ajax_search_path %>", { pattern: $("#allinput").val() }, null, "script");
+    }
+  });
 </script>
 <% end %>

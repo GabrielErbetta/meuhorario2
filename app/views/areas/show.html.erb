@@ -1,6 +1,3 @@
-<%= stylesheet_link_tag 'areas' %>
-
-
 <%= render 'shared/header' %>
 
 <div class="row">
@@ -10,35 +7,20 @@
 <div class="row block">
   <div class="search">
     <i class="icon-search"></i>
-    <input class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Digite o nome do seu curso" />
+    <input id="coursesFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Digite o nome do seu curso" />
   </div>
 
-  <div class="courses-list">
+  <ul class="block-list">
     <% @courses.each do |course| %>
-      <a class="course" href="<%= course_page_path course.code %>"><%= "#{course.code} - #{course.name}" %></a>
+      <a href="<%= course_page_path course.code %>"><li class="block-list-item course"><%= "#{course.code} - #{course.name}" %></li></a>
     <% end %>
-  </div>
+  </ul>
 </div>
 
 <% content_for :script do %>
 <script>
-  var contains = function(string, substring) {
-    if (removeDiacritics(string.toLowerCase()).includes(removeDiacritics(substring.toLowerCase())))
-      return true;
-    return false;
-  };
-
-  var filterCourses = function(filter) {
-    $(".course").each(function(i, anchor) {
-      if (contains(anchor.text, filter))
-        anchor.style.display = 'block';
-      else
-        anchor.style.display = 'none';
-    });
-  };
-
   $("#coursesFilterInput").on("input", function() {
-    filterCourses($(this).val());
+    filterList("course", $(this).val());
   });
 </script>
 <% end %>
