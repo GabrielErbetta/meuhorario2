@@ -29,12 +29,12 @@ class CoursesController < ApplicationController
       cds.reject{ |cd| cd.nature != 'OB' }.each do |cd|
         (@semesters[cd.semester] ||= []) << cd.discipline
 
-        pre_requisites = cd.pre_requisites
+        pre_requisites = cd.pre_requisites.reject{ |pre| pre.pre_discipline.nature != 'OB' }
         pre_requisites.each do |p|
           (pre[cd.discipline.code] ||= []) << p.pre_discipline.discipline.code
         end
 
-        post_requisites = cd.post_requisites
+        post_requisites = cd.post_requisites.reject{ |post| post.post_discipline.nature != 'OB' }
         post_requisites.each do |p|
           (post[cd.discipline.code] ||= []) << p.post_discipline.discipline.code
         end

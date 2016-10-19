@@ -57,7 +57,7 @@
 
     <ul class="block-list">
       <% @ops.each do |op| %>
-        <li class="block-list-item list-item-discipline elective-discipline"><%= "#{op.code} - #{op.name}" %></li>
+        <li id="<%= op.code %>" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
       <% end %>
     </ul>
   </div>
@@ -70,7 +70,7 @@
 
     <ul class="block-list">
       <% @offered.each do |offered| %>
-        <li class="block-list-item list-item-discipline offered-discipline"><%= "#{offered.code} - #{offered.name}" %></li>
+        <li id="<%= offered.code %>" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
       <% end %>
     </ul>
   </div>
@@ -95,7 +95,7 @@
   var preRequisites       = <%= raw @pre  %>;
   var postRequisites      = <%= raw @post %>;
 
-  function changeBgColor(code, colorPre, colorPost) {
+  var changeBgColor = function(code, colorPre, colorPost) {
     return function() {
       if (preRequisites[code]) {
         preRequisites[code].forEach(function(preReq) {
@@ -111,6 +111,17 @@
         });
       }
     };
+  }
+
+  var updateDisciplineEvents = function(class_name) {
+    $("." + class_name).click(function() {
+      $.ajax({
+        type: 'GET',
+        url: '<%= discipline_get_information_path %>',
+        data: { code: $(this)[0].id, course: <%= params[:code] %> },
+        dataType: "script"
+      });
+    });
   }
 
   for (var i = 0; i < blockDisciplines.length; i++) {
@@ -138,8 +149,21 @@
     else {
       $("#allinput").removeClass("error");
       $("#allBlockList").empty();
-      $.get("<%= discipline_ajax_search_path %>", { pattern: $("#allinput").val() }, null, "script");
+
+      $.ajax({
+        type: 'GET',
+        url: '<%= discipline_ajax_search_path %>',
+        data: { pattern: $("#allinput").val() },
+        success: function() {
+          updateDisciplineEvents("search-discipline");
+        },
+        dataType: "script"
+      });
     }
+  });
+
+  $(document).ready(function() {
+    updateDisciplineEvents("discipline");
   });
 </script>
 <% end %>
