@@ -16,10 +16,10 @@
 <div class="row block tabs-content" data-tabs-content="blockTabs">
   <div id="mandatory" class="tabs-panel no-padding is-active">
     <div class="row">
-      <div class="small-4 medium-1 columns text-center no-padding column-title">
+      <div class="medium-1 columns text-center no-padding column-title show-for-medium">
         Semestre
       </div>
-      <div class="small-8 medium-11 columns text-center column-title">
+      <div class="medium-11 columns text-center column-title show-for-medium">
         Disciplinas
       </div>
     </div>
@@ -28,12 +28,12 @@
       <% width = 100.0 / @semesters.max_by{ |s| s ? s.size : 0 }.size %>
       <% @semesters[1..-1].each_with_index do |semester, i| %>
         <% if semester %>
-          <div class="row">
-            <div class="small-4 medium-1 columns text-center no-padding semester">
-              <span class="number"><%= i + 1 %></span>
+          <div class="row semester-row">
+            <div class="small-12 medium-1 columns text-center no-padding semester">
+              <span class="number"><%= i + 1 %><span class="show-for-small-only">º Semestre</span>
             </div>
 
-            <div class="small-8 medium-11 columns">
+            <div class="small-12 medium-11 columns">
               <% semester.each do |discipline| %>
                 <div id="<%= discipline.code %>" class="block-discipline discipline text-center" style="width: <%= width %>%;">
                   <div class="text">
