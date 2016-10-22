@@ -89,11 +89,24 @@
   </div>
 </div>
 
+<div id="disciplineModal" class="large reveal" data-reveal>
+
+  <div id="content"></div>
+
+  <div id="loader"></div>
+
+  <button class="close-button" data-close aria-label="Close reveal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
 <% content_for :script do %>
 <script>
   var blockDisciplines    = document.getElementsByClassName("block-discipline");
   var preRequisites       = <%= raw @pre  %>;
   var postRequisites      = <%= raw @post %>;
+  var panelVisible        = false;
+  var spinner;
 
   var changeBgColor = function(code, colorPre, colorPost) {
     return function() {
@@ -113,13 +126,33 @@
     };
   }
 
+  /*var openDisciplinePanel = function() {
+    if (!panelVisible) {
+      $(".side-panel").show();
+      $(".side-panel").animate({right: '0'}, 400);
+      panelVisible = true;
+    }
+
+    $("#content").hide();
+    $("#loader").show();
+  }*/
+
   var updateDisciplineEvents = function(class_name) {
     $("." + class_name).click(function() {
       $.ajax({
         type: 'GET',
         url: '<%= discipline_get_information_path %>',
         data: { code: $(this)[0].id, course: <%= params[:code] %> },
-        dataType: "script"
+        dataType: 'html',
+        beforeSend: function() {
+          $("#content").empty();
+          $("#loader").show();
+          $("#disciplineModal").foundation('open');
+        }
+      })
+      .done(function(html) {
+        $("#loader").hide();
+        $("#content").html(html);
       });
     });
   }
@@ -154,7 +187,7 @@
         type: 'GET',
         url: '<%= discipline_ajax_search_path %>',
         data: { pattern: $("#allinput").val() },
-        success: function() {
+        done: function() {
           updateDisciplineEvents("search-discipline");
         },
         dataType: "script"
@@ -164,6 +197,8 @@
 
   $(document).ready(function() {
     updateDisciplineEvents("discipline");
+    spinner = new Spinner().spin();
+    $("#loader").append(spinner.el)
   });
 </script>
 <% end %>

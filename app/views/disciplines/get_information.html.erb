@@ -1,0 +1,54 @@
+<!--
+json.code @discipline.code
+json.name @discipline.name
+
+if @course_discipline
+  json.nature @course_discipline.nature
+  json.semester @course_discipline.semester if @course_discipline.semester
+
+  json.pre_requisites @pre_requisites do |pre_requisites|
+    json.code pre_requisites.pre_discipline.discipline.code
+    json.name pre_requisites.pre_discipline.discipline.name
+  end
+
+  json.post_requisites @post_requisites do |post_requisites|
+    json.code post_requisites.post_discipline.discipline.code
+    json.name post_requisites.post_discipline.discipline.name
+  end
+end
+-->
+
+<div class="code">
+  <%= @discipline.code %>
+</div>
+
+<div class="title">
+  <%= @discipline.name %>
+</div>
+
+<% if @course_discipline %>
+  <div class="pre-requisites">
+  Pre-requisitos
+    <% @pre_requisites.each do |pre| %>
+      <div class="pre-requisite"><%= pre.pre_discipline.discipline.code + ' - ' + pre.pre_discipline.discipline.name %></div>
+    <% end %>
+  </div>
+
+  <div class="post-requisites">
+    Matérias liberadas
+    <% @post_requisites.each do |post| %>
+      <div class="post-requisite"><%= post.post_discipline.discipline.code + ' - ' + post.post_discipline.discipline.name %></div>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @discipline_classes %>
+  <div class="schedules">
+    <% @discipline_classes.each do |dc| %>
+      <div class><%= dc.class_number %></div>
+      <% dc.schedules.each do |s| %>
+        <div><%= "#{s.day_friendly} - #{s.start_hour}:#{s.start_minute} às #{s.end_hour}:#{s.end_minute}" %></div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

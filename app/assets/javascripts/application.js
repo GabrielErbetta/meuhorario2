@@ -16,4 +16,5 @@
 //= require what-input
 //= require foundation
 //= require diacritics
+//= require spin
 //= require_tree .
