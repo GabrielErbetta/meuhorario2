@@ -1,54 +1,81 @@
-<!--
-json.code @discipline.code
-json.name @discipline.name
-
-if @course_discipline
-  json.nature @course_discipline.nature
-  json.semester @course_discipline.semester if @course_discipline.semester
-
-  json.pre_requisites @pre_requisites do |pre_requisites|
-    json.code pre_requisites.pre_discipline.discipline.code
-    json.name pre_requisites.pre_discipline.discipline.name
-  end
-
-  json.post_requisites @post_requisites do |post_requisites|
-    json.code post_requisites.post_discipline.discipline.code
-    json.name post_requisites.post_discipline.discipline.name
-  end
-end
--->
-
-<div class="code">
-  <%= @discipline.code %>
-</div>
-
 <div class="title">
-  <%= @discipline.name %>
+  <%= "#{@discipline.code} - #{@discipline.name}" %>
 </div>
 
-<% if @course_discipline %>
-  <div class="pre-requisites">
-  Pre-requisitos
-    <% @pre_requisites.each do |pre| %>
-      <div class="pre-requisite"><%= pre.pre_discipline.discipline.code + ' - ' + pre.pre_discipline.discipline.name %></div>
-    <% end %>
-  </div>
-
-  <div class="post-requisites">
-    Matérias liberadas
-    <% @post_requisites.each do |post| %>
-      <div class="post-requisite"><%= post.post_discipline.discipline.code + ' - ' + post.post_discipline.discipline.name %></div>
-    <% end %>
-  </div>
-<% end %>
-
-<% if @discipline_classes %>
-  <div class="schedules">
-    <% @discipline_classes.each do |dc| %>
-      <div class><%= dc.class_number %></div>
-      <% dc.schedules.each do |s| %>
-        <div><%= "#{s.day_friendly} - #{s.start_hour}:#{s.start_minute} às #{s.end_hour}:#{s.end_minute}" %></div>
+<ul class="accordion" data-accordion data-allow-all-closed="true">
+  <li class="accordion-item" data-accordion-item>
+    <a class="accordion-title">Pré-Requisitos:</a>
+    <div class="accordion-content" data-tab-content>
+      <% if @pre_requisites.blank? %>
+        <div>Esta matéria não é do seu curso ou não possui nenhum pré-requisito.</div>
+      <% else %>
+        <div class="small-12 columns no-padding">
+          <ul class="modal-block-list">
+            <% @pre_requisites.each do |pre| %>
+              <li code="<%= pre.code %>" class="block-list-item list-item-discipline modal-discipline"><%= "#{pre.code} - #{pre.name}" %></li>
+            <% end %>
+          </ul>
+        </div>
       <% end %>
-    <% end %>
-  </div>
-<% end %>
+    </div>
+  </li>
+
+  <li class="accordion-item" data-accordion-item>
+    <a class="accordion-title">Matérias Liberadas:</a>
+    <div class="accordion-content" data-tab-content>
+      <% if @post_requisites.blank? %>
+        <div>Esta matéria não é do seu curso ou não é pré-requisito de nenhuma outra.</div>
+      <% else %>
+        <div class="small-12 columns no-padding">
+          <ul class="modal-block-list">
+            <% @post_requisites.each do |post| %>
+              <li code="<%= post.code %>" class="block-list-item list-item-discipline modal-discipline"><%= "#{post.code} - #{post.name}" %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </li>
+
+  <% if @discipline_classes %>
+    <li class="accordion-item" data-accordion-item>
+      <a class="accordion-title">Turmas e Horários:</a>
+      <div class="accordion-content schedules" data-tab-content>
+        <% if @discipline_classes.blank? %>
+          <div>Esta matéria não tem nenhuma turma cadastrada.</div>
+        <% else %>
+          <div class="small-12 columns">
+            <ul class="modal-block-list">
+              <% @discipline_classes.sort_by{ |dc| dc.class_number }.each do |dc| %>
+                <li class="block-list-item schedule row">
+                  <div class="small-12 columns class-number">
+                    <%= dc.class_number %>
+                  </div>
+                  <div class="small-12 columns">
+                    <% dc.schedules.reverse.each do |s| %>
+                      <div class="row">
+                        <div class="small-5 columns">
+                          <div class="small-4 columns no-padding">
+                            <%= "#{s.day_friendly}" %>
+                          </div>
+                          <div class="small-8 columns no-padding">
+                            <%= "#{"%02d" % s.start_hour}:#{"%02d" % s.start_minute} às #{"%02d" % s.end_hour}:#{"%02d" % s.end_minute}" %>
+                          </div>
+                        </div>
+                        <div class="small-7 columns">
+                          <% s.professors.each do |p| %>
+                            <div><%= p.name %></div>
+                          <% end %>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </li>
+  <% end %>
+</ul>

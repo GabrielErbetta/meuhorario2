@@ -1,7 +1,11 @@
 <%= render 'shared/header' %>
 
 <div class="row">
-  <div class="small-12 columns text-center info-text">Monte a sua grade</div>
+  <div class="small-12 columns text-center info-text">
+    Monte a sua grade
+    <div class="subtext"><%= @course.name %></div>
+  </div>
+
 </div>
 
 <div class="row">
@@ -15,11 +19,11 @@
 
 <div class="row block tabs-content" data-tabs-content="blockTabs">
   <div id="mandatory" class="tabs-panel no-padding is-active">
-    <div class="row">
-      <div class="medium-1 columns text-center no-padding column-title show-for-medium">
+    <div class="row show-for-large">
+      <div class="medium-1 columns text-center no-padding column-title">
         Semestre
       </div>
-      <div class="medium-11 columns text-center column-title show-for-medium">
+      <div class="medium-11 columns text-center column-title">
         Disciplinas
       </div>
     </div>
@@ -29,13 +33,13 @@
       <% @semesters[1..-1].each_with_index do |semester, i| %>
         <% if semester %>
           <div class="row semester-row">
-            <div class="small-12 medium-1 columns text-center no-padding semester">
-              <span class="number"><%= i + 1 %><span class="show-for-small-only">º Semestre</span>
+            <div class="small-12 large-1 columns text-center no-padding semester">
+              <span class="number"><%= i + 1 %><span class="hide-for-large">º Semestre</span></span>
             </div>
 
-            <div class="small-12 medium-11 columns">
+            <div class="small-12 large-11 columns">
               <% semester.each do |discipline| %>
-                <div id="<%= discipline.code %>" class="block-discipline discipline text-center" style="width: <%= width %>%;">
+                <div id="<%= discipline.code %>" code="<%= discipline.code %>" class="block-discipline discipline text-center" style="width: <%= width %>%;">
                   <div class="text">
                     <div class="code"><%= discipline.code %></div>
                     <div class="name"><%= discipline.name %></div>
@@ -55,11 +59,13 @@
       <input id="electiveFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
     </div>
 
-    <ul class="block-list">
-      <% @ops.each do |op| %>
-        <li id="<%= op.code %>" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
-      <% end %>
-    </ul>
+    <div class="small-12 columns no-padding">
+      <ul class="block-list">
+        <% @ops.each do |op| %>
+          <li code="<%= op.code %>" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
+        <% end %>
+      </ul>
+    </div>
   </div>
 
   <div id="offered" class="tabs-panel no-padding">
@@ -68,11 +74,13 @@
       <input id="offeredFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
     </div>
 
-    <ul class="block-list">
-      <% @offered.each do |offered| %>
-        <li id="<%= offered.code %>" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
-      <% end %>
-    </ul>
+    <div class="small-12 columns no-padding">
+      <ul class="block-list">
+        <% @offered.each do |offered| %>
+          <li code="<%= offered.code %>" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
+        <% end %>
+      </ul>
+    </div>
   </div>
 
   <div id="all" class="tabs-panel no-padding row">
@@ -84,16 +92,25 @@
       <button id="buttonS" type="submit" class="button expanded">Buscar</button>
     </div>
 
-    <ul id="allBlockList" class="block-list">
-    </ul>
+    <div class="small-12 columns">
+      <ul id="allBlockList" class="block-list">
+      </ul>
+    </div>
   </div>
 </div>
 
 <div id="disciplineModal" class="large reveal" data-reveal>
 
-  <div id="content"></div>
-
   <div id="loader"></div>
+
+  <div id="modalWrapper" class="row">
+    <div id="content" class="small-12 large-6 columns discipline-info"></div>
+
+    <div class="small-12 large-6 columns table-wrapper">
+      <div class="title">Grade de Horários</div>
+      <%= render partial: 'schedule_table' %>
+    </div>
+  </div>
 
   <button class="close-button" data-close aria-label="Close reveal" type="button">
     <span aria-hidden="true">&times;</span>
@@ -102,69 +119,54 @@
 
 <% content_for :script do %>
 <script>
-  var blockDisciplines    = document.getElementsByClassName("block-discipline");
   var preRequisites       = <%= raw @pre  %>;
   var postRequisites      = <%= raw @post %>;
-  var panelVisible        = false;
-  var spinner;
 
   var changeBgColor = function(code, colorPre, colorPost) {
     return function() {
       if (preRequisites[code]) {
         preRequisites[code].forEach(function(preReq) {
-          if (document.getElementById(preReq))
-            document.getElementById(preReq).style.backgroundColor = colorPre;
+          var $preReq = $("#" + preReq);
+          if ($preReq)
+            $preReq.css("background-color", colorPre);
         });
       }
 
       if (postRequisites[code]) {
         postRequisites[code].forEach(function(postReq) {
-          if (document.getElementById(postReq))
-            document.getElementById(postReq).style.backgroundColor = colorPost;
+          var $postReq = $("#" + postReq);
+          if ($postReq)
+            $postReq.css("background-color", colorPost);
         });
       }
     };
   }
 
-  /*var openDisciplinePanel = function() {
-    if (!panelVisible) {
-      $(".side-panel").show();
-      $(".side-panel").animate({right: '0'}, 400);
-      panelVisible = true;
-    }
-
-    $("#content").hide();
-    $("#loader").show();
-  }*/
-
   var updateDisciplineEvents = function(class_name) {
-    $("." + class_name).click(function() {
+    $("." + class_name).click(function(event) {
       $.ajax({
         type: 'GET',
         url: '<%= discipline_get_information_path %>',
-        data: { code: $(this)[0].id, course: <%= params[:code] %> },
+        data: { code: $(this).attr('code'), course: <%= params[:code] %> },
         dataType: 'html',
         beforeSend: function() {
           $("#content").empty();
+          $("#modalWrapper").hide();
           $("#loader").show();
-          $("#disciplineModal").foundation('open');
+          if (class_name != "modal-discipline")
+            $("#disciplineModal").foundation('open');
         }
       })
       .done(function(html) {
         $("#loader").hide();
+        $("#modalWrapper").show();
         $("#content").html(html);
+        $("#content").foundation();
+        updateDisciplineEvents("modal-discipline");
       });
+      event.stopPropagation();
+      event.preventDefault();
     });
-  }
-
-  for (var i = 0; i < blockDisciplines.length; i++) {
-    blockDisciplines[i].addEventListener("mouseover", function() { this.style.backgroundColor = "#C5C5F5" });
-    blockDisciplines[i].addEventListener("mouseout", function() { this.style.backgroundColor = "#C5C5C5" });
-    var code = blockDisciplines[i].id;
-    if (preRequisites[code] || postRequisites[code]) {
-      blockDisciplines[i].addEventListener("mouseover", changeBgColor(code, "#F5C5C5", "#C5F5C5"));
-      blockDisciplines[i].addEventListener("mouseout", changeBgColor(code, "#C5C5C5", "#C5C5C5"));
-    }
   }
 
   $("#electiveFilterInput").on("input", function() {
@@ -187,18 +189,30 @@
         type: 'GET',
         url: '<%= discipline_ajax_search_path %>',
         data: { pattern: $("#allinput").val() },
-        done: function() {
-          updateDisciplineEvents("search-discipline");
-        },
-        dataType: "script"
+        dataType: 'html'
+      })
+      .done(function(html) {
+        $("#allBlockList").html(html);
+        updateDisciplineEvents("search-discipline");
       });
     }
   });
 
   $(document).ready(function() {
-    updateDisciplineEvents("discipline");
-    spinner = new Spinner().spin();
+    // Start loading spinner
+    var spinner = new Spinner().spin();
     $("#loader").append(spinner.el)
+
+    // Add hover event effects to pre and post requisites
+    $(".block-discipline").each(function() {
+      var code = $(this).attr("code");
+
+      $(this).mouseenter(changeBgColor(code, "#F5C5C5", "#C5F5C5"));
+      $(this).mouseleave(changeBgColor(code, "", ""));
+    });
+
+    // Add click event to get discipline informations
+    updateDisciplineEvents("discipline");
   });
 </script>
 <% end %>

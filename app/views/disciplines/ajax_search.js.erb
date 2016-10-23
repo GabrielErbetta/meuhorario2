@@ -1,7 +1,0 @@
-<% if @disciplines.blank? %>
-  $("#allBlockList").append('<div class="small-12 columns"><div class="alert callout">Nenhuma disciplina encontrada.</div></div>');
-<% else %>
-  <% @disciplines.each do |discipline| %>
-    $("#allBlockList").append('<li id="<%= discipline.code %>" class="block-list-item list-item-discipline search-discipline discipline"><%= "#{discipline.code} - #{discipline.name}" %></li>');
-  <% end %>
-<% end %>

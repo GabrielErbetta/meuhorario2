@@ -6,6 +6,7 @@ $font_color: #424242;
 $light_gray: #F8F8F8;
 $gray: darken(#F8F8F8, 20%);
 $dark_gray: darken(#F8F8F8, 30%);
+$moon_raker_blue: #C5C5F5;
 
 
 
@@ -48,6 +49,11 @@ body {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 20px;
+
+  .subtext {
+    font-size: 16px;
+    font-weight: 400;
+  }
 }
 
 .block {

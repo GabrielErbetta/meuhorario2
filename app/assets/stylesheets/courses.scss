@@ -78,6 +78,10 @@
   font-size: 12px;
   line-height: 90px;
 
+  &:hover {
+    background-color: $moon_raker_blue;
+  }
+
   .text {
     display: inline-block;
     vertical-align: middle;
@@ -99,7 +103,63 @@
 }
 
 .reveal {
-  min-height: 500px;
+  min-height: 80%;
+  border-radius: 5px;
+
+  .close-button {
+    font-size: 50px;
+    line-height: 30px;
+  }
+
+  .title {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .discipline-info {
+    position: relative;
+    min-height: 100%;
+
+    .accordion {
+      .accordion-title {
+        @include transition();
+        color: $font_color;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .accordion-content {
+        background-color: $light_gray;
+        overflow-y: auto;
+        color: $font_color;
+      }
+    }
+
+    .modal-block-list {
+      margin-left: 0;
+
+      .block-list-item {
+        @include transition();
+        display: block;
+        margin-top: 4px;
+        padding: 5px;
+        color: $font_color;
+        font-size: 16px;
+        cursor: pointer;
+
+        &:hover {
+          @include box-shadow(0.3);
+          background-color: white;
+        }
+
+        .class-number {
+          font-weight: 600;
+        }
+      }
+    }
+  }
 }
 
 
@@ -128,11 +188,29 @@
   .discipline {
     min-width: 33%;
   }
+
+  .reveal {
+    border-radius: 0;
+  }
+
+  .table-wrapper {
+    padding: 0 !important;
+
+    table {
+      font-size: 12px;
+    }
+  }
 }
 
 @media only screen and (min-width: 40.063em) and (max-width: 64em) {
   .discipline {
     min-width: 20%;
+  }
+
+  .semester-row {
+    .semester {
+      line-height: 30px;
+    }
   }
 }
 
