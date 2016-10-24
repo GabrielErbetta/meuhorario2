@@ -8,11 +8,19 @@ class Schedule < ApplicationRecord
     return days[self.day]
   end
 
+  def start_hour_friendly
+    return "#{"%02d" % self.start_hour}:#{"%02d" % self.start_minute}"
+  end
+
+  def end_hour_friendly
+    return "#{"%02d" % self.end_hour}:#{"%02d" % self.end_minute}"
+  end
+
   def daytime_number
-    n = self.hour * 60
-    n -= 30 if self.hour > 12
+    n = self.start_hour * 60
+    n -= 30 if self.start_hour > 12
     n -= 7 * 60
-    n += self.minute
+    n += self.start_minute
     n /= 55
 
     return n + 1

@@ -19,6 +19,14 @@ class DisciplinesController < ApplicationController
     end
 
     @discipline_classes = @discipline.discipline_classes
+
+    schedules = {}
+    @discipline_classes.each do |dc|
+      dc.schedules.each do |schedule|
+        (schedules[dc.class_number] ||= []) << { day: schedule.day, daytime_number: schedule.daytime_number, class_count: schedule.class_count }
+      end
+    end
+    @schedules = schedules.to_json
   end
 
   def ajax_search

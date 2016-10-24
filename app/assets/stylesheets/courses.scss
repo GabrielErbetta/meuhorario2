@@ -154,11 +154,37 @@
           background-color: white;
         }
 
+        &.schedule.selected {
+          @include box-shadow(0.3);
+          background-color: white;
+        }
+
         .class-number {
           font-weight: 600;
         }
       }
     }
+  }
+}
+
+.schedule-table {
+  table-layout: fixed;
+
+  &.modal-table {
+    font-size: 12px;
+  }
+
+  &.large-table {
+    margin-top: 30px;
+  }
+
+  td, th {
+    padding: 0.6rem 0.4rem;
+    text-align: center;
+  }
+
+  .table-discipline-large, .table-discipline-modal {
+    cursor: pointer;
   }
 }
 
@@ -195,10 +221,10 @@
 
   .table-wrapper {
     padding: 0 !important;
+  }
 
-    table {
-      font-size: 12px;
-    }
+  .large-table {
+    font-size: 12px;
   }
 }
 

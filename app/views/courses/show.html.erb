@@ -99,6 +99,12 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="small-12 columns">
+    <%= render partial: 'schedule_table', locals: { table_id: 'largeTable', table_class: 'schedule-table large-table' } %>
+  </div>
+</div>
+
 <div id="disciplineModal" class="large reveal" data-reveal>
 
   <div id="loader"></div>
@@ -108,7 +114,7 @@
 
     <div class="small-12 large-6 columns table-wrapper">
       <div class="title">Grade de Horários</div>
-      <%= render partial: 'schedule_table' %>
+      <%= render partial: 'schedule_table', locals: { table_id: 'modalTable', table_class: 'schedule-table modal-table' } %>
     </div>
   </div>
 
@@ -121,14 +127,16 @@
 <script>
   var preRequisites       = <%= raw @pre  %>;
   var postRequisites      = <%= raw @post %>;
+  var selectedSchedules   = {};
+  var schedules;
 
-  var changeBgColor = function(code, colorPre, colorPost) {
+  var changeBgColor = function(code, color_pre, color_post) {
     return function() {
       if (preRequisites[code]) {
         preRequisites[code].forEach(function(preReq) {
           var $preReq = $("#" + preReq);
           if ($preReq)
-            $preReq.css("background-color", colorPre);
+            $preReq.css("background-color", color_pre);
         });
       }
 
@@ -136,24 +144,87 @@
         postRequisites[code].forEach(function(postReq) {
           var $postReq = $("#" + postReq);
           if ($postReq)
-            $postReq.css("background-color", colorPost);
+            $postReq.css("background-color", color_post);
         });
       }
     };
   }
 
-  var updateDisciplineEvents = function(class_name) {
+  var highlightSchedules = function(class_name, weight_value){
+    return function() {
+      $(class_name).css('font-weight', weight_value);
+    }
+  }
+
+  var updateScheduleEvents = function(code) {
+    $(".schedule").click(function(event) {
+      var classNumber = $(this).attr("class-number");
+
+      if (selectedSchedules[code]) {
+        var $schedule_codes = $(".schedule-" + code);
+        var $tds = $schedule_codes.map(function() { return $(this).parent(); });
+
+        $(".schedule.selected").removeClass("selected");
+        $(".schedule-" + code).remove();
+
+        $tds.each(function() {
+          if ($(this).hasClass("error") && $(this).children().size() < 2)
+            $(this).removeClass("error");
+        });
+      }
+
+      if (selectedSchedules[code] && selectedSchedules[code] == classNumber) {
+        selectedSchedules[code] = null;
+      }
+      else {
+        selectedSchedules[code] = classNumber;
+        $(this).addClass("selected");
+
+        schedules[classNumber].forEach(function(schedule) {
+          var divModal = '<div code="' + code +'" class="schedule-' + code + ' table-discipline-modal">' + code + '</div>';
+          var divLarge = '<div code="' + code +'" class="schedule-' + code + ' table-discipline-large">' + code + '</div>';
+
+          for (var i = 0; i < schedule.class_count; i++) {
+            var $tdModal = $("#modalTable").find(".d" + schedule.day + "h" + (schedule.daytime_number + i));
+            var $tdLarge = $("#largeTable").find(".d" + schedule.day + "h" + (schedule.daytime_number + i));
+
+            if ($tdModal.children().size() > 0) {
+              $tdModal.addClass('error');
+              $tdLarge.addClass('error');
+            }
+
+            $tdModal.append(divModal);
+            $tdLarge.append(divLarge);
+          }
+        });
+
+        $(".schedule-" + code).mouseenter(highlightSchedules(".schedule-" + code, '600'));
+        $(".schedule-" + code).mouseleave(highlightSchedules(".schedule-" + code, ''));
+
+        updateDisciplineEvents('table-discipline-modal', false);
+        updateDisciplineEvents('table-discipline-large', true);
+      }
+
+      $("#largeTable").get(0).scrollIntoView();
+      event.stopPropagation();
+      event.preventDefault();
+    });
+  }
+
+  var updateDisciplineEvents = function(class_name, open_modal) {
     $("." + class_name).click(function(event) {
+      var code = $(this).attr('code');
+
       $.ajax({
         type: 'GET',
         url: '<%= discipline_get_information_path %>',
-        data: { code: $(this).attr('code'), course: <%= params[:code] %> },
+        data: { code: code, course: <%= params[:code] %> },
         dataType: 'html',
         beforeSend: function() {
           $("#content").empty();
           $("#modalWrapper").hide();
           $("#loader").show();
-          if (class_name != "modal-discipline")
+          if (open_modal)
             $("#disciplineModal").foundation('open');
         }
       })
@@ -162,7 +233,13 @@
         $("#modalWrapper").show();
         $("#content").html(html);
         $("#content").foundation();
-        updateDisciplineEvents("modal-discipline");
+
+        if (selectedSchedules[code]) {
+          $("#" + code + "-" + selectedSchedules[code]).addClass('selected');
+        }
+
+        updateDisciplineEvents("modal-discipline", false);
+        updateScheduleEvents(code);
       });
       event.stopPropagation();
       event.preventDefault();
@@ -193,7 +270,7 @@
       })
       .done(function(html) {
         $("#allBlockList").html(html);
-        updateDisciplineEvents("search-discipline");
+        updateDisciplineEvents("search-discipline", true);
       });
     }
   });
@@ -212,7 +289,7 @@
     });
 
     // Add click event to get discipline informations
-    updateDisciplineEvents("discipline");
+    updateDisciplineEvents("discipline", true);
   });
 </script>
 <% end %>

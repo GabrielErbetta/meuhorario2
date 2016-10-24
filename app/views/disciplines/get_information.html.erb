@@ -37,45 +37,49 @@
     </div>
   </li>
 
-  <% if @discipline_classes %>
-    <li class="accordion-item" data-accordion-item>
-      <a class="accordion-title">Turmas e Horários:</a>
-      <div class="accordion-content schedules" data-tab-content>
-        <% if @discipline_classes.blank? %>
-          <div>Esta matéria não tem nenhuma turma cadastrada.</div>
-        <% else %>
-          <div class="small-12 columns">
-            <ul class="modal-block-list">
-              <% @discipline_classes.sort_by{ |dc| dc.class_number }.each do |dc| %>
-                <li class="block-list-item schedule row">
-                  <div class="small-12 columns class-number">
-                    <%= dc.class_number %>
-                  </div>
-                  <div class="small-12 columns">
-                    <% dc.schedules.reverse.each do |s| %>
-                      <div class="row">
-                        <div class="small-5 columns">
-                          <div class="small-4 columns no-padding">
-                            <%= "#{s.day_friendly}" %>
-                          </div>
-                          <div class="small-8 columns no-padding">
-                            <%= "#{"%02d" % s.start_hour}:#{"%02d" % s.start_minute} às #{"%02d" % s.end_hour}:#{"%02d" % s.end_minute}" %>
-                          </div>
+  <li class="accordion-item" data-accordion-item>
+    <a class="accordion-title">Turmas e Horários:</a>
+    <div class="accordion-content schedules" data-tab-content>
+      <% if @discipline_classes.blank? %>
+        <div>Esta matéria não tem nenhuma turma cadastrada.</div>
+      <% else %>
+        <div class="small-12 columns">
+          <ul class="modal-block-list">
+            <% @discipline_classes.sort_by{ |dc| dc.class_number }.each do |dc| %>
+              <li id="<%= "#{@discipline.code}-#{dc.class_number}" %>" class-number="<%= dc.class_number %>" class="block-list-item schedule row">
+                <div class="small-12 columns class-number">
+                  <%= dc.class_number %>
+                </div>
+                <div class="small-12 columns">
+                  <% dc.schedules.reverse.each do |s| %>
+                    <div class="row">
+                      <div class="small-5 columns">
+                        <div class="small-4 columns no-padding">
+                          <%= "#{s.day_friendly}" %>
                         </div>
-                        <div class="small-7 columns">
-                          <% s.professors.each do |p| %>
-                            <div><%= p.name %></div>
-                          <% end %>
+                        <div class="small-8 columns no-padding">
+                          <%= "#{s.start_hour_friendly} às #{s.end_hour_friendly}" %>
                         </div>
                       </div>
-                    <% end %>
-                  </div>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
-      </div>
-    </li>
-  <% end %>
+                      <div class="small-7 columns">
+                        <% s.professors.each do |p| %>
+                          <div><%= p.name %></div>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </li>
 </ul>
+
+<% unless @schedules.blank? %>
+  <script>
+    schedules = <%= raw @schedules %>;
+  </script>
+<% end %>
