@@ -18,6 +18,4 @@ Rails.application.routes.draw do
   get 'crawl_classes' => 'admin#crawl_classes', :as => 'crawl_classes'
   get 'titleize' => 'admin#titleize', :as => 'titleize'
   get 'clear_db' => 'admin#clear_db', :as => 'clear_db'
-  get 'crawl_cs' => 'admin#crawl_cs', :as => 'crawl_cs'
-  get 'crawl_cs_classes' => 'admin#crawl_cs_classes', :as => 'crawl_cs_classes'
 end

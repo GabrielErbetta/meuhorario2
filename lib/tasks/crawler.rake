@@ -44,7 +44,7 @@ namespace :crawler do
     require 'rubygems'
     require 'mechanize'
 
-    Course.all.order(:code).each do |course|
+    Course.all.order(:name).each do |course|
       puts "    Crawling #{course.name}"
 
       agent = Mechanize.new
@@ -60,7 +60,7 @@ namespace :crawler do
         rows.each do |row|
           columns = row.css('td')
 
-          semester = columns[0].css('b').text.to_i unless columns[0].css('b').text.blank?
+          semester = columns[0].text.to_i unless columns[0].text.blank?
           nature = columns[1].text
           code = columns[2].text
           name = columns[3].css('a').text.strip
@@ -100,7 +100,7 @@ namespace :crawler do
     require 'rubygems'
     require 'mechanize'
 
-    Course.all.order(:code).each do |course|
+    Course.all.order(:name).each do |course|
       puts "    Crawling #{course.name}"
 
       agent = Mechanize.new
@@ -158,203 +158,6 @@ namespace :crawler do
   end
 
 
-  desc 'Crawl computer science classes page'
-  task :cs_disciplines => :environment do
-    course = Course.find_by_code '112'
-    unless course
-      course = Course.new
-      course.code = '112'
-      course.name = 'Ciência da Computação'
-      course.save
-    end
-
-    require 'rubygems'
-    require 'mechanize'
-
-    agent = Mechanize.new
-    hub = agent.get 'https://alunoweb.ufba.br/SiacWWW/CurriculoCursoGradePublico.do?cdCurso=112140&nuPerCursoInicial=20132'
-
-    for i in 0..1
-      page = hub.links[i].click
-
-      table = page.search('table')[0]
-      rows = table.css('tr')[2..-1]
-
-      semester = nil
-      rows.each do |row|
-        columns = row.css('td')
-
-        semester = columns[0].css('b').text.to_i unless columns[0].css('b').text.blank?
-        nature = columns[1].text
-        code = columns[2].text
-        name = columns[3].css('a').text.strip
-        requisites = columns[4].text
-        requisites = requisites == '--' ? [] : requisites.split(', ')
-
-        discipline = Discipline.find_by_code code
-
-        unless discipline
-          discipline = Discipline.new
-          discipline.code = code
-          discipline.name = name
-          discipline.save
-        end
-
-        course_discipline = CourseDiscipline.where(course_id: course.id, discipline_id: discipline.id)
-        if course_discipline.blank?
-          course_discipline = CourseDiscipline.new
-          course_discipline.semester = semester
-          course_discipline.nature = nature
-          course_discipline.discipline = discipline
-          course_discipline.course = course
-          course_discipline.save
-
-          requisites.each do |requisite|
-            pre_discipline = Discipline.find_by_code requisite
-            pre_cd = CourseDiscipline.where(course: course, discipline: pre_discipline).first
-
-            if (pre_cd.blank?)
-              puts "Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
-            else
-              pr = PreRequisite.new
-              pr.pre_discipline = pre_cd
-              pr.post_discipline = course_discipline
-              pr.save
-            end
-          end
-        end
-      end
-    end
-  end
-
-
-  desc 'Crawl computer science classes page'
-  task :cs_classes => :environment do
-    course_code = '112'
-    courses = Course.where "code LIKE ?", "#{course_code}%"
-
-    require 'nokogumbo'
-
-    days = ['CMB', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM']
-
-    page = Nokogiri::HTML5.get 'https://twiki.ufba.br/twiki/pub/SUPAC/GradGuiaAreaI1/112.html'
-
-    body = page.search('body')
-    course_name = body.css('font')[1].text.split(': ')[1]
-    table = body.css('table')
-    rows = table.css('tr')
-
-    discipline = nil
-    class_n = nil
-    d_class = nil
-    vacancies = nil
-    day = nil
-    day_number = nil
-    time = nil
-    professor = nil
-    schedules = []
-
-    rows[7..-1].each do |row|
-      columns = row.css('td')
-
-      unless columns.blank?
-        discipline_text = columns[0].children[0].text
-        if discipline_text != ''
-          d_parts = discipline_text.split(' - ')
-          d_code = d_parts[0]
-
-          discipline = Discipline.find_by_code d_code
-
-          if discipline.nil?
-            discipline = Discipline.new
-            discipline.code = d_code
-            discipline.name = d_parts[1..-1].join(' - ')
-            discipline.save
-          end
-        end
-
-        if columns[1].children[0].text != ''
-          class_n = columns[1].children[0].text
-          vacancies = columns[2].children[0].text
-
-          d_class = DisciplineClass.where(discipline: discipline, class_number: class_n).first
-          unless d_class
-            d_class = DisciplineClass.new
-            d_class.discipline = discipline
-            d_class.class_number = class_n
-            d_class.save
-          end
-
-          courses.each do |course|
-            dc_offer = course.discipline_class_offers.where(discipline_class: d_class).first
-            unless dc_offer
-              dc_offer = DisciplineClassOffer.new
-              dc_offer.discipline_class = d_class
-              dc_offer.vacancies = vacancies
-              dc_offer.save
-
-              cc_offer = CourseClassOffer.new
-              cc_offer.course = course
-              cc_offer.discipline_class_offer = dc_offer
-              cc_offer.save
-            end
-          end
-        end
-
-        if columns[3].children[0].text != ''
-          day = columns[3].children[0].text
-          day_number = days.index day
-        end
-
-        n_classes = 0
-        if columns[4].children[0].text != ''
-          schedules = []
-
-          times = columns[4].children[0].text.split ' às '
-          start_time = times[0].split ':'
-          start_hour = start_time[0].to_i
-          start_minute = start_time[1].to_i
-
-          if day_number == 0
-            n_classes = 1
-          else
-            end_time = times[1].split ':'
-            end_hour = end_time[0].to_i
-            end_minute = end_time[1].to_i
-
-            n_classes = ((end_hour - start_hour) * 60 + (end_minute - start_minute)) / 55
-          end
-        end
-
-        n_classes.times do |i|
-          schedule = Schedule.new
-          schedule.day = day_number
-          schedule.hour = start_hour + ((i * 55 + start_minute) / 60)
-          schedule.minute = (start_minute + i * 55) % 60
-          schedule.discipline_class = d_class
-          schedule.save
-          schedules << schedule
-        end
-
-        professor_name = columns[5].children[0].text.strip unless columns[5].children[0].text == ''
-        professor = Professor.find_by_name professor_name
-        unless professor
-          professor = Professor.new
-          professor.name = professor_name
-          professor.save
-        end
-
-        schedules.each do |schedule|
-          professor_schedule = ProfessorSchedule.new
-          professor_schedule.schedule = schedule
-          professor_schedule.professor = professor
-          professor_schedule.save
-        end
-      end
-    end
-  end
-
-
   desc 'Crawl all courses class pages'
   task :classes => :environment do
     require 'nokogumbo'
@@ -367,12 +170,12 @@ namespace :crawler do
     days = ['CMB', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM']
 
     agent = Mechanize.new
-    hub = agent.get "http://www.twiki.ufba.br/twiki/bin/view/SUPAC/MatriculaGraduacaoColegiado1"
-    area_hubs = hub.search('a.twikiLink').select{ |a| a['href'].include? 'GradGuia' }.map{ |a| agent.get a['href'] }
+    hub = agent.get 'https://supac.ufba.br/guia-de-matricula-por-curso-20161-0'
+    area_hubs = hub.search('#conteudo').css('a').map{ |a| agent.get a['href'] }
 
     area_hubs.each do |area_hub|
-      guides_table = area_hub.search('table#table1')
-      guide_urls = guides_table.css('a').map { |a| a['href'] }
+      guides_list = area_hub.search('div.field-item.even')
+      guide_urls = guides_list.css('a').map{ |a| URI.join(area_hub.uri, a['href']).to_s }.delete_if{ |a| a.include? 'www2.supac.ufba.br' }
       guides = guide_urls.map { |url| Nokogiri::HTML5.get url }
 
       guides.each_with_index do |page, index|
@@ -381,6 +184,8 @@ namespace :crawler do
         course_hash = {}
         course_code = guide_urls[index].split('/')[-1]
         course_code.slice! '.html'
+        course_code.slice! '.htm'
+        course_code = course_code.split('_')[0]
 
         course_code = '316' if course_code == '301'
 
@@ -581,11 +386,11 @@ namespace :crawler do
     puts '-----------------------------------------------------------------------'
     puts '-> Starting areas crawling...'
     agent = Mechanize.new
-    hub = agent.get "http://www.twiki.ufba.br/twiki/bin/view/SUPAC/MatriculaGraduacaoColegiado1"
-    areas = hub.search('a.twikiLink').select{ |a| a['href'].include? 'GradGuia' }
+    hub = agent.get 'https://supac.ufba.br/guia-de-matricula-por-curso-20161-0'
+    areas = hub.search('#conteudo').css('a')
 
     areas.each do |a|
-      area_text = a.text.split ' - '
+      area_text = a.children[0].text.split('-').map { |string| string.gsub(/\A[[:space:]]+|[[:space:]]+\z/, '') }
 
       if area_text[0].include? 'Bacharelados Interdisciplinares'
         name = 'BI'
@@ -604,12 +409,14 @@ namespace :crawler do
       end
 
       area_hub = agent.get a['href']
-      guides_table = area_hub.search('table#table1')
-      guide_urls = guides_table.css('a').map { |a| a['href'] }
+      guides_list = area_hub.search('div.field-item.even')
+      guide_urls = guides_list.css('a').map { |a| a['href'] }
 
       guide_urls.each do |guide_url|
         course_code = guide_url.split('/')[-1]
         course_code.slice! '.html'
+        course_code.slice! '.htm'
+        course_code = course_code.split('_')[0]
 
         course_code = '316' if course_code == '301'
 
