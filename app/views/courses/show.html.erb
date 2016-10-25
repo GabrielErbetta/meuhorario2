@@ -129,6 +129,18 @@
   var postRequisites      = <%= raw @post %>;
   var selectedSchedules   = {};
   var schedules;
+  var bgIndex             = 0;
+  var backgroundColors    = [ "antiquewhite", "aquamarine", "cadetblue", "cornflowerblue", "khaki",
+                              "greenyellow", "indianred", "lightblue", "lightgreen", "lightpink",
+                              "lightseagreen", "orchid", "yellowgreen", "goldgreen", "lightteal",
+                              "paleorange", "faintpurple", "colorfulgray", "pinkishpurple", "pink" ];
+
+  var shuffle = function(array) {
+    var random = array.map(Math.random);
+    array.sort(function(a, b) {
+      return random[a] - random[b];
+    });
+  }
 
   var changeBgColor = function(code, color_pre, color_post) {
     return function() {
@@ -171,6 +183,8 @@
           if ($(this).hasClass("error") && $(this).children().size() < 2)
             $(this).removeClass("error");
         });
+
+        bgIndex--;
       }
 
       if (selectedSchedules[code] && selectedSchedules[code] == classNumber) {
@@ -180,10 +194,14 @@
         selectedSchedules[code] = classNumber;
         $(this).addClass("selected");
 
-        schedules[classNumber].forEach(function(schedule) {
-          var divModal = '<div code="' + code +'" class="schedule-' + code + ' table-discipline-modal">' + code + '</div>';
-          var divLarge = '<div code="' + code +'" class="schedule-' + code + ' table-discipline-large">' + code + '</div>';
+        if (bgIndex >= backgroundColors.length)
+          bgIndex = 0;
 
+        var commonClasses = "schedule-" + code + " " + backgroundColors[bgIndex];
+        var divModal = '<div code="' + code +'" class="' + commonClasses + ' table-discipline-modal">' + code + '</div>';
+        var divLarge = '<div code="' + code +'" class="' + commonClasses + ' table-discipline-large">' + code + '</div>';
+
+        schedules[classNumber].forEach(function(schedule) {
           for (var i = 0; i < schedule.class_count; i++) {
             var $tdModal = $("#modalTable").find(".d" + schedule.day + "h" + (schedule.daytime_number + i));
             var $tdLarge = $("#largeTable").find(".d" + schedule.day + "h" + (schedule.daytime_number + i));
@@ -197,6 +215,8 @@
             $tdLarge.append(divLarge);
           }
         });
+
+        bgIndex++;
 
         $(".schedule-" + code).mouseenter(highlightSchedules(".schedule-" + code, '600'));
         $(".schedule-" + code).mouseleave(highlightSchedules(".schedule-" + code, ''));
@@ -290,6 +310,8 @@
 
     // Add click event to get discipline informations
     updateDisciplineEvents("discipline", true);
+
+    shuffle(backgroundColors);
   });
 </script>
 <% end %>

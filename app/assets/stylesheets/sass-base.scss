@@ -1,0 +1,20 @@
+$font_color: #424242;
+$light_gray: #F8F8F8;
+$gray: darken(#F8F8F8, 20%);
+$dark_gray: darken(#F8F8F8, 30%);
+$moon_raker_blue: #C5C5F5;
+
+
+
+@mixin transition() {
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+@mixin box-shadow($radius) {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,$radius);
+  -moz-box-shadow:    0px 0px 5px 0px rgba(0,0,0,$radius);
+  box-shadow:         0px 0px 5px 0px rgba(0,0,0,$radius);
+}
