@@ -12,11 +12,6 @@ class AdminController < ApplicationController
     render 'index'
   end
 
-  def crawl_cs
-    call_rake 'crawler:cs_disciplines'
-    render 'index'
-  end
-
   def crawl_courses
     call_rake 'crawler:courses'
     render 'index'
@@ -34,11 +29,6 @@ class AdminController < ApplicationController
 
   def crawl_pre_reqs
     call_rake 'crawler:pre_requisites'
-    render 'index'
-  end
-
-  def crawl_cs_classes
-    call_rake 'crawler:cs_classes'
     render 'index'
   end
 

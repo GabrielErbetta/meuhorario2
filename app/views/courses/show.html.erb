@@ -129,17 +129,48 @@
   var postRequisites      = <%= raw @post %>;
   var selectedSchedules   = {};
   var schedules;
-  var bgIndex             = 0;
+  var usedBgColors        = [];
   var backgroundColors    = [ "antiquewhite", "aquamarine", "cadetblue", "cornflowerblue", "khaki",
                               "greenyellow", "indianred", "lightblue", "lightgreen", "lightpink",
                               "lightseagreen", "orchid", "yellowgreen", "goldgreen", "lightteal",
                               "paleorange", "faintpurple", "colorfulgray", "pinkishpurple", "pink" ];
 
-  var shuffle = function(array) {
-    var random = array.map(Math.random);
-    array.sort(function(a, b) {
-      return random[a] - random[b];
-    });
+
+  Array.prototype.shuffle = function() {
+    var input = this;
+
+    for (var i = input.length-1; i >=0; i--) {
+
+        var randomIndex = Math.floor(Math.random()*(i+1));
+        var itemAtIndex = input[randomIndex];
+
+        input[randomIndex] = input[i];
+        input[i] = itemAtIndex;
+    }
+    return input;
+  }
+
+  var getBgColor = function(){
+    if (usedBgColors.length == backgroundColors.length)
+      usedBgColors = [];
+
+    for (var i = 0; i < backgroundColors.length; i++) {
+      if (usedBgColors.indexOf(backgroundColors[i]) === -1) {
+        usedBgColors.push(backgroundColors[i]);
+        return backgroundColors[i];
+      }
+    }
+  }
+
+  var removeBgColor = function(classes) {
+    var index;
+    for (var i = 0; i < classes.length; i++) {
+      index = usedBgColors.indexOf(classes[i]);
+      if (index != -1) {
+        usedBgColors.splice(index, 1);
+        return;
+      }
+    }
   }
 
   var changeBgColor = function(code, color_pre, color_post) {
@@ -176,15 +207,15 @@
         var $schedule_codes = $(".schedule-" + code);
         var $tds = $schedule_codes.map(function() { return $(this).parent(); });
 
+        removeBgColor($schedule_codes[0].className.split(/\s+/));
+
         $(".schedule.selected").removeClass("selected");
-        $(".schedule-" + code).remove();
+        $schedule_codes.remove();
 
         $tds.each(function() {
           if ($(this).hasClass("error") && $(this).children().size() < 2)
             $(this).removeClass("error");
         });
-
-        bgIndex--;
       }
 
       if (selectedSchedules[code] && selectedSchedules[code] == classNumber) {
@@ -194,10 +225,7 @@
         selectedSchedules[code] = classNumber;
         $(this).addClass("selected");
 
-        if (bgIndex >= backgroundColors.length)
-          bgIndex = 0;
-
-        var commonClasses = "schedule-" + code + " " + backgroundColors[bgIndex];
+        var commonClasses = getBgColor() + " schedule-" + code;
         var divModal = '<div code="' + code +'" class="' + commonClasses + ' table-discipline-modal">' + code + '</div>';
         var divLarge = '<div code="' + code +'" class="' + commonClasses + ' table-discipline-large">' + code + '</div>';
 
@@ -215,8 +243,6 @@
             $tdLarge.append(divLarge);
           }
         });
-
-        bgIndex++;
 
         $(".schedule-" + code).mouseenter(highlightSchedules(".schedule-" + code, '600'));
         $(".schedule-" + code).mouseleave(highlightSchedules(".schedule-" + code, ''));
@@ -311,7 +337,9 @@
     // Add click event to get discipline informations
     updateDisciplineEvents("discipline", true);
 
-    shuffle(backgroundColors);
+    console.log(backgroundColors);
+    backgroundColors.shuffle();
+    console.log(backgroundColors);
   });
 </script>
 <% end %>
