@@ -25,3 +25,9 @@
     </div>
   <% end %>
 </div>
+
+<% content_for :script do %>
+<script>
+  mixpanel.track("Acessou a home");
+</script>
+<% end %>

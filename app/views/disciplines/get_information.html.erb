@@ -12,7 +12,7 @@
         <div class="small-12 columns no-padding">
           <ul class="modal-block-list">
             <% @pre_requisites.each do |pre| %>
-              <li code="<%= pre.code %>" class="block-list-item list-item-discipline modal-discipline"><%= "#{pre.code} - #{pre.name}" %></li>
+              <li code="<%= pre.code %>" click-source="pre-requisito" class="block-list-item list-item-discipline modal-discipline"><%= "#{pre.code} - #{pre.name}" %></li>
             <% end %>
           </ul>
         </div>
@@ -29,7 +29,7 @@
         <div class="small-12 columns no-padding">
           <ul class="modal-block-list">
             <% @post_requisites.each do |post| %>
-              <li code="<%= post.code %>" class="block-list-item list-item-discipline modal-discipline"><%= "#{post.code} - #{post.name}" %></li>
+              <li code="<%= post.code %>" click-source="pos-requisito" class="block-list-item list-item-discipline modal-discipline"><%= "#{post.code} - #{post.name}" %></li>
             <% end %>
           </ul>
         </div>

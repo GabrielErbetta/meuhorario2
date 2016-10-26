@@ -4,6 +4,6 @@
   </div>
 <% else %>
   <% @disciplines.each do |discipline| %>
-    <li code="<%= discipline.code %>" class="block-list-item list-item-discipline search-discipline discipline"><%= "#{discipline.code} - #{discipline.name}" %></li>
+    <li code="<%= discipline.code %>" click-source="buscada" class="block-list-item list-item-discipline search-discipline discipline"><%= "#{discipline.code} - #{discipline.name}" %></li>
   <% end %>
 <% end %>

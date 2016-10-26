@@ -27,5 +27,7 @@
   $("#coursesFilterInput").on("input", function() {
     filterList("course", $(this).val());
   });
+
+  mixpanel.track("Acessou página de área", { "nome_area": "<%= @name %>" });
 </script>
 <% end %>

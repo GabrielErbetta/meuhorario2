@@ -39,7 +39,7 @@
 
             <div class="small-12 large-11 columns">
               <% semester.each do |discipline| %>
-                <div id="<%= discipline.code %>" code="<%= discipline.code %>" class="block-discipline discipline text-center" style="width: <%= width %>%;">
+                <div id="<%= discipline.code %>" code="<%= discipline.code %>" click-source="curriculo" class="block-discipline discipline text-center" style="width: <%= width %>%;">
                   <div class="text">
                     <div class="code"><%= discipline.code %></div>
                     <div class="name"><%= discipline.name %></div>
@@ -62,7 +62,7 @@
     <div class="small-12 columns no-padding">
       <ul class="block-list">
         <% @ops.each do |op| %>
-          <li code="<%= op.code %>" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
+          <li code="<%= op.code %>" click-source="optativa" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
         <% end %>
       </ul>
     </div>
@@ -77,7 +77,7 @@
     <div class="small-12 columns no-padding">
       <ul class="block-list">
         <% @offered.each do |offered| %>
-          <li code="<%= offered.code %>" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
+          <li code="<%= offered.code %>" click-source="ofertada" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
         <% end %>
       </ul>
     </div>
@@ -133,7 +133,7 @@
   var backgroundColors    = [ "antiquewhite", "aquamarine", "cadetblue", "cornflowerblue", "khaki",
                               "greenyellow", "indianred", "lightblue", "lightgreen", "lightpink",
                               "lightseagreen", "orchid", "yellowgreen", "goldgreen", "lightteal",
-                              "paleorange", "faintpurple", "colorfulgray", "pinkishpurple", "pink" ];
+                              "paleorange", "colorfulgray", "pinkishpurple" ];
 
 
   Array.prototype.shuffle = function() {
@@ -226,8 +226,8 @@
         $(this).addClass("selected");
 
         var commonClasses = getBgColor() + " schedule-" + code;
-        var divModal = '<div code="' + code +'" class="' + commonClasses + ' table-discipline-modal">' + code + '</div>';
-        var divLarge = '<div code="' + code +'" class="' + commonClasses + ' table-discipline-large">' + code + '</div>';
+        var divModal = '<div code="' + code +'" click-source="grade-modal" class="' + commonClasses + ' table-discipline-modal">' + code + '</div>';
+        var divLarge = '<div code="' + code +'" click-source="grade" class="' + commonClasses + ' table-discipline-large">' + code + '</div>';
 
         schedules[classNumber].forEach(function(schedule) {
           for (var i = 0; i < schedule.class_count; i++) {
@@ -250,6 +250,12 @@
         updateDisciplineEvents('table-discipline-modal', false);
         updateDisciplineEvents('table-discipline-large', true);
       }
+
+      mixpanel.track("Selecionou turma de disciplina", {
+        "nome_curso": "<%= @course.name %>",
+        "codigo_disciplina": code,
+        "codigo_turma": classNumber,
+      });
 
       $("#largeTable").get(0).scrollIntoView();
       event.stopPropagation();
@@ -287,6 +293,13 @@
         updateDisciplineEvents("modal-discipline", false);
         updateScheduleEvents(code);
       });
+
+      mixpanel.track("Acessou informações de disciplina", {
+        "nome_curso": "<%= @course.name %>",
+        "codigo_disciplina": code,
+        "origem": $(this).attr('click-source')
+      });
+
       event.stopPropagation();
       event.preventDefault();
     });
@@ -307,16 +320,22 @@
     else {
       $("#allinput").removeClass("error");
       $("#allBlockList").empty();
+      var query = $("#allinput").val();
 
       $.ajax({
         type: 'GET',
         url: '<%= discipline_ajax_search_path %>',
-        data: { pattern: $("#allinput").val() },
+        data: { pattern: query },
         dataType: 'html'
       })
       .done(function(html) {
         $("#allBlockList").html(html);
         updateDisciplineEvents("search-discipline", true);
+      });
+
+      mixpanel.track("Buscou por disciplina", {
+        "nome_curso": "<%= @course.name %>",
+        "query": query
       });
     }
   });
@@ -337,9 +356,10 @@
     // Add click event to get discipline informations
     updateDisciplineEvents("discipline", true);
 
-    console.log(backgroundColors);
+    // Randomize background colors
     backgroundColors.shuffle();
-    console.log(backgroundColors);
+
+    mixpanel.track("Acessou página de curso", { "nome_curso": "<%= @course.name %>" });
   });
 </script>
 <% end %>
