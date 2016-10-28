@@ -1,0 +1,74 @@
+<meta charset='utf-8' />
+<%= wicked_pdf_stylesheet_link_tag 'foundation' %>
+<%= wicked_pdf_stylesheet_link_tag 'pdf' %>
+
+<script>
+  var color = 0;
+  var colors = <%= raw @colors.to_s %>;
+
+  function updateScheduleGrid(schedules) {
+    if (colors > colors.length)
+      colors = 0;
+
+    schedules.forEach(function(schedule) {
+      for (var i = 0; i < schedule.class_count; i++) {
+        var class_name = "d" + schedule.day + "h" + (schedule.daytime_number + i);
+        var table = document.getElementById('pdfTable');
+
+        var td = table.getElementsByClassName(class_name)[0];
+
+        td.innerHTML += "<div class='" + colors[color] + "'>" + schedule.discipline + "</div>";
+      }
+    });
+
+    document.getElementById(schedules[0].discipline).setAttribute("class", colors[color]);
+    color ++;
+  }
+</script>
+
+<div class="content row">
+  <div class="header small-12 columns">
+    <div class="small-6 columns">
+      Grade de Horários
+    </div>
+    <div class="small-6 columns">
+      <%= wicked_pdf_image_tag 'meuhorario.jpg' %>
+    </div>
+  </div>
+  <div class="schedule-grid small-12 columns">
+    <%= render partial: 'courses/schedule_table', locals: { table_id: 'pdfTable', table_class: 'schedule-table' } %>
+  </div>
+  <ul class="legend small-up-2">
+    <% @classes.each do |dc, schedules| %>
+      <li class="column discipline-class no-padding">
+        <div><span id="<%= dc.discipline.code %>"><%= dc.discipline.code %></span> - <%= dc.discipline.name %></div>
+        <div class="class-number">
+          Turma <%= dc.class_number %>
+        </div>
+        <div>
+          <% dc.schedules.reverse.each do |s| %>
+            <div class="row">
+              <div class="small-5 columns">
+                <div class="small-4 columns no-padding">
+                  <%= "#{s.day_friendly}" %>
+                </div>
+                <div class="small-8 columns no-padding">
+                  <%= "#{s.start_hour_friendly} às #{s.end_hour_friendly}" %>
+                </div>
+              </div>
+              <div class="small-7 columns">
+                <% s.professors.each do |p| %>
+                  <div><%= p.name %></div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </li>
+
+    <script>
+      updateScheduleGrid(<%= raw schedules.to_json %>);
+    </script>
+    <% end %>
+  </ul>
+</div>

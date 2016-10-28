@@ -188,6 +188,23 @@
   }
 }
 
+.go-to-top {
+  @include transition();
+  padding-left: 5px;
+  line-height: 50px;
+  cursor: pointer;
+
+  &:hover {
+    font-weight: 600;
+  }
+}
+
+.export-button {
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 50px;
+}
+
 
 
 @media only screen and (max-width: 40em) {

@@ -1,0 +1,123 @@
+@import 'https://fonts.googleapis.com/css?family=Ruluko';
+
+.content {
+  font-family: 'Ruluko', sans-serif !important;
+
+  .header {
+    padding-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 60px;
+  }
+
+  .schedule-grid {
+    table {
+      table-layout: fixed;
+
+      td, th {
+        padding: 0.4rem;
+        font-size: 12px;
+        text-align: center;
+      }
+    }
+  }
+
+  .legend {
+    margin-left: 0;
+    list-style: none;
+
+    .discipline-class {
+      page-break-inside: avoid;
+      padding: 0 0 20px 0;
+      font-size: 12px;
+
+      &:before {
+        clear:both;
+      }
+
+      div, .class-number {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+}
+
+
+
+div.alwaysbreak { page-break-before: always; }
+div.nobreak:before { clear:both; }
+div.nobreak { page-break-inside: avoid; }
+
+
+.antiquewhite {
+  background-color: #f0e8d0;
+}
+
+.aquamarine {
+  background-color: #80ffd0;
+}
+
+.cadetblue {
+  background-color: #60a0a0;
+}
+
+.cornflowerblue {
+  background-color: #6090f0;
+}
+
+.khaki {
+  background-color: #f0e890;
+}
+
+.greenyellow {
+  background-color: #b0ff30;
+}
+
+.indianred {
+  background-color: #d05860;
+}
+
+.lightblue {
+  background-color: #b0d8e0;
+}
+
+.lightgreen {
+  background-color: #90f090;
+}
+
+.lightpink {
+  background-color: #ffb8c0;
+}
+
+.lightseagreen {
+  background-color: #20b0a0;
+}
+
+.orchid {
+  background-color: #d070d0;
+}
+
+.yellowgreen {
+  background-color: #90c830;
+}
+
+.goldgreen {
+  background-color: #c5d31e;
+}
+
+.lightteal {
+  background-color: #76bdf3;
+}
+
+.paleorange {
+  background-color: #f0961a;
+}
+
+.colorfulgray {
+  background-color: #849084;
+}
+
+.pinkishpurple {
+  background-color: #d5a6d0;
+}

@@ -84,24 +84,31 @@
   </div>
 
   <div id="all" class="tabs-panel no-padding row">
-    <div class="search small-12 medium-10 columns">
-      <i class="icon-search"></i>
-      <input id="allinput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
-    </div>
-    <div class="small-12 medium-2 columns">
-      <button id="buttonS" type="submit" class="button expanded">Buscar</button>
-    </div>
+    <form id="searchForm">
+      <div class="search small-12 medium-10 columns">
+        <i class="icon-search"></i>
+        <input id="allinput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
+      </div>
+      <div class="small-12 medium-2 columns">
+        <button id="buttonS" type="submit" class="button expanded">Buscar</button>
+      </div>
 
-    <div class="small-12 columns">
-      <ul id="allBlockList" class="block-list">
-      </ul>
+      <div class="small-12 columns">
+        <ul id="allBlockList" class="block-list">
+        </ul>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
 <div class="row">
   <div class="small-12 columns">
     <%= render partial: 'schedule_table', locals: { table_id: 'largeTable', table_class: 'schedule-table large-table' } %>
+  </div>
+
+  <div class="small-12 columns">
+    <span id="goToTop" class="go-to-top">▲ Topo</span>
+    <div id="exportPdf" class="button export-button float-right">Exportar como PDF</div>
   </div>
 </div>
 
@@ -257,7 +264,7 @@
         "codigo_turma": classNumber,
       });
 
-      $("#largeTable").get(0).scrollIntoView();
+      $('html,body').animate({scrollTop: $("#largeTable").offset().top}, 500);
       event.stopPropagation();
       event.preventDefault();
     });
@@ -313,7 +320,7 @@
     filterList("offered-discipline", $(this).val());
   });
 
-  $("#buttonS").click(function() {
+  $("#searchForm").submit(function() {
     var pattern = $("#allinput").val();
     if (pattern.length == 0)
       $("#allinput").addClass("error");
@@ -338,6 +345,16 @@
         "query": query
       });
     }
+    return false;
+  });
+
+  $("#goToTop").click(function() {
+    $('html,body').animate({scrollTop: $("#blockTabs").offset().top}, 500);
+  });
+
+  $("#exportPdf").click(function() {
+    var url = "<%= export_schedule_pdf_path %>.pdf?" + $.param(selectedSchedules);
+    window.open(url, '_blank');
   });
 
   $(document).ready(function() {

@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get 'disciplinas/buscar' => 'disciplines#ajax_search', :as => 'discipline_ajax_search'
   get 'disciplinas/' => 'disciplines#get_information', :as => 'discipline_get_information'
 
+  get 'exportar_grade' => 'application#export_schedule_pdf', :as => 'export_schedule_pdf'
+
   get 'admin' => 'admin#index'
   get 'crawl_courses' => 'admin#crawl_courses', :as => 'crawl_courses'
   get 'crawl_areas' => 'admin#crawl_areas', :as => 'crawl_areas'

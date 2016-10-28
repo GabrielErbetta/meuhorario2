@@ -5,54 +5,34 @@ class ApplicationController < ActionController::Base
     @areas = Area.all
   end
 
-  def clear_db
-    CourseDiscipline.destroy_all
-    Discipline.destroy_all
-    Course.destroy_all
+  def export_schedule_pdf
+    @classes = {}
 
-    redirect_to root_path
-  end
+    request.GET.each do |discipline_code, class_number|
+      discipline = Discipline.find_by_code discipline_code
+      dc = DisciplineClass.includes(:discipline).where(discipline: discipline, class_number: class_number).first
 
-  def crawl_cs
-    call_rake 'crawler:cs_disciplines'
-    redirect_to root_path
-  end
+      schedules = []
+      dc.schedules.each do |schedule|
+        schedules << { day: schedule.day, daytime_number: schedule.daytime_number, class_count: schedule.class_count, discipline: dc.discipline.code }
+      end
+      @classes[dc] = schedules
+    end
 
-  def crawl_courses
-    call_rake 'crawler:courses'
-    redirect_to root_path
-  end
+    @colors = [ "antiquewhite", "aquamarine", "cadetblue", "cornflowerblue", "khaki",
+                "greenyellow", "indianred", "lightblue", "lightgreen", "lightpink",
+                "lightseagreen", "orchid", "yellowgreen", "goldgreen", "lightteal",
+                "paleorange", "colorfulgray", "pinkishpurple"
+              ].shuffle
 
-  def crawl_disciplines
-    call_rake 'crawler:disciplines'
-    redirect_to root_path
-  end
-
-  def crawl_pre_reqs
-    call_rake 'crawler:pre_requisites'
-    redirect_to root_path
-  end
-
-  def crawl_cs_classes
-    call_rake 'crawler:cs_classes'
-    redirect_to root_path
-  end
-
-  def crawl_classes
-    call_rake 'crawler:classes'
-    redirect_to root_path
-  end
-
-  def titleize_disciplines
-    call_rake 'crawler:titleize'
-    redirect_to root_path
-  end
-
-  private
-
-  def call_rake(task, options = {})
-    options[:rails_env] ||= Rails.env
-    args = options.map { |n, v| "#{n.to_s.upcase}='#{v}'" }
-    system "rake #{task} #{args.join(' ')} >> #{Rails.root}/log/rake.log 2>&1 &"
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render  pdf:          'grade_meuhorario',
+                page_size:    'A4',
+                orientation:  'Portrait',
+                template:     'application/export_schedule_pdf.html.erb'
+      end
+    end
   end
 end
