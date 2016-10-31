@@ -12,11 +12,13 @@ class ApplicationController < ActionController::Base
       discipline = Discipline.find_by_code discipline_code
       dc = DisciplineClass.includes(:discipline).where(discipline: discipline, class_number: class_number).first
 
-      schedules = []
-      dc.schedules.each do |schedule|
-        schedules << { day: schedule.day, daytime_number: schedule.daytime_number, class_count: schedule.class_count, discipline: dc.discipline.code }
+      unless dc.nil?
+        schedules = []
+        dc.schedules.each do |schedule|
+          schedules << { day: schedule.day, daytime_number: schedule.daytime_number, class_count: schedule.class_count, discipline: dc.discipline.code }
+        end
+        @classes[dc] = schedules
       end
-      @classes[dc] = schedules
     end
 
     @colors = [ "antiquewhite", "aquamarine", "cadetblue", "cornflowerblue", "khaki",

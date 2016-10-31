@@ -353,6 +353,8 @@
   });
 
   $("#exportPdf").click(function() {
+    mixpanel.track("Exportou PDF das turmas", selectedSchedules);
+
     var url = "<%= export_schedule_pdf_path %>.pdf?" + $.param(selectedSchedules);
     window.open(url, '_blank');
   });
