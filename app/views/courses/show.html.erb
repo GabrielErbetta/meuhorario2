@@ -143,18 +143,14 @@
                               "paleorange", "colorfulgray", "pinkishpurple" ];
 
 
-  Array.prototype.shuffle = function() {
-    var input = this;
-
+  var shuffle = function(input) {
     for (var i = input.length-1; i >=0; i--) {
+      var randomIndex = Math.floor(Math.random()*(i+1));
+      var itemAtIndex = input[randomIndex];
 
-        var randomIndex = Math.floor(Math.random()*(i+1));
-        var itemAtIndex = input[randomIndex];
-
-        input[randomIndex] = input[i];
-        input[i] = itemAtIndex;
+      input[randomIndex] = input[i];
+      input[i] = itemAtIndex;
     }
-    return input;
   }
 
   var getBgColor = function(){
@@ -214,19 +210,22 @@
         var $schedule_codes = $(".schedule-" + code);
         var $tds = $schedule_codes.map(function() { return $(this).parent(); });
 
-        removeBgColor($schedule_codes[0].className.split(/\s+/));
+        if ($tds.length > 0) {
+          removeBgColor($schedule_codes[0].className.split(/\s+/));
+
+          $schedule_codes.remove();
+
+          $tds.each(function() {
+            if ($(this).hasClass("error") && $(this).children().size() < 2)
+              $(this).removeClass("error");
+          });
+        }
 
         $(".schedule.selected").removeClass("selected");
-        $schedule_codes.remove();
-
-        $tds.each(function() {
-          if ($(this).hasClass("error") && $(this).children().size() < 2)
-            $(this).removeClass("error");
-        });
       }
 
       if (selectedSchedules[code] && selectedSchedules[code] == classNumber) {
-        selectedSchedules[code] = null;
+        delete selectedSchedules[code];
       }
       else {
         selectedSchedules[code] = classNumber;
@@ -353,7 +352,8 @@
   });
 
   $("#exportPdf").click(function() {
-    mixpanel.track("Exportou PDF das turmas", selectedSchedules);
+    var mixpanel_params = selectedSchedules;
+    mixpanel.track("Exportou PDF das turmas", $.extend(true, [], selectedSchedules));
 
     var url = "<%= export_schedule_pdf_path %>.pdf?" + $.param(selectedSchedules);
     window.open(url, '_blank');
@@ -376,7 +376,7 @@
     updateDisciplineEvents("discipline", true);
 
     // Randomize background colors
-    backgroundColors.shuffle();
+    shuffle(backgroundColors);
 
     mixpanel.track("Acessou página de curso", { "nome_curso": "<%= @course.name %>" });
   });
