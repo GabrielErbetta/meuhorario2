@@ -203,7 +203,7 @@
   }
 
   var updateScheduleEvents = function(code) {
-    $(".schedule").click(function(event) {
+    $(".schedule").off('click').click(function(event) {
       var classNumber = $(this).attr("class-number");
 
       if (selectedSchedules[code]) {
@@ -270,7 +270,7 @@
   }
 
   var updateDisciplineEvents = function(class_name, open_modal) {
-    $("." + class_name).click(function(event) {
+    $("." + class_name).off('click').click(function(event) {
       var code = $(this).attr('code');
 
       $.ajax({
