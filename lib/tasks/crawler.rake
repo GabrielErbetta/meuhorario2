@@ -256,7 +256,14 @@ namespace :crawler do
               end
 
               if columns[4].children[0].text != ''
-                unless day_number == 0
+                if day_number == 0
+                  start_hour = 0
+                  start_minute = 0
+                  end_hour = 0
+                  end_minute = 0
+                  first_class_number = 0
+                  class_count = 0
+                else
                   times = columns[4].children[0].text.split ' às '
                   start_time = times[0].split ':'
                   start_hour = start_time[0].to_i
@@ -278,21 +285,12 @@ namespace :crawler do
                 unless schedule
                   schedule = Schedule.new
                   schedule.day = day_number
-                  if day_number != 0
-                    schedule.start_hour = start_hour
-                    schedule.start_minute = start_minute
-                    schedule.end_hour = end_hour
-                    schedule.end_minute = end_minute
-                    schedule.first_class_number = first_class_number
-                    schedule.class_count = n_classes
-                  else
-                    schedule.start_hour = 0
-                    schedule.start_minute = 0
-                    schedule.end_hour = 0
-                    schedule.end_minute = 0
-                    schedule.first_class_number = 0
-                    schedule.class_count = 0
-                  end
+                  schedule.start_hour = start_hour
+                  schedule.start_minute = start_minute
+                  schedule.end_hour = end_hour
+                  schedule.end_minute = end_minute
+                  schedule.first_class_number = first_class_number
+                  schedule.class_count = n_classes
                   schedule.discipline_class = d_class
                   schedule.save
                 end
