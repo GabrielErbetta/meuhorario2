@@ -170,7 +170,7 @@ namespace :crawler do
     days = ['CMB', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM']
 
     agent = Mechanize.new
-    hub = agent.get 'https://supac.ufba.br/guia-de-matricula-por-curso-20161-0'
+    hub = agent.get 'https://supac.ufba.br/guiamatriculagradacaoporcurso_2016.2'
     area_hubs = hub.search('#conteudo').css('a').map{ |a| agent.get a['href'] }
 
     area_hubs.each do |area_hub|
@@ -386,7 +386,7 @@ namespace :crawler do
     puts '-----------------------------------------------------------------------'
     puts '-> Starting areas crawling...'
     agent = Mechanize.new
-    hub = agent.get 'https://supac.ufba.br/guia-de-matricula-por-curso-20161-0'
+    hub = agent.get 'https://supac.ufba.br/guiamatriculagradacaoporcurso_2016.2'
     areas = hub.search('#conteudo').css('a')
 
     areas.each do |a|
