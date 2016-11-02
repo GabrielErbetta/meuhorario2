@@ -1,30 +1,34 @@
-<%= render 'shared/header' %>
+<div class="wrapper">
+  <%= render 'shared/header' %>
 
-<div class="row">
-  <div class="small-12 columns text-center info-text">
-    Escolha a sua área
+  <div class="row">
+    <div class="small-12 columns text-center info-text">
+      Escolha a sua área
+    </div>
+  </div>
+
+  <div class="row area-grid text-center">
+    <% @areas.each_with_index do |area, index| %>
+      <%= '<div class="buffer-15 columns show-for-large"></div>'.html_safe if index == 4 %>
+      <% if index != 6 %>
+        <% classes = "small-offset-1 small-10 medium-offset-0 medium-4 large-3 columns" %>
+      <% else %>
+        <% classes = "small-offset-1 small-10 medium-offset-4 medium-4 large-offset-0 large-3 columns end" %>
+      <% end %>
+
+      <div class="<%= classes %>">
+        <a class="area-card text-center" href="<%= area_path id: area.id %>">
+          <div class="area-card-content">
+            <span class="title"><%= area.name %></span>
+            <span class="text"><%= area.description %></span>
+          </div>
+        </a>
+      </div>
+    <% end %>
   </div>
 </div>
 
-<div class="row area-grid text-center">
-  <% @areas.each_with_index do |area, index| %>
-    <%= '<div class="buffer-15 columns show-for-large"></div>'.html_safe if index == 4 %>
-    <% if index != 6 %>
-      <% classes = "small-offset-1 small-10 medium-offset-0 medium-4 large-3 columns" %>
-    <% else %>
-      <% classes = "small-offset-1 small-10 medium-offset-4 medium-4 large-offset-0 large-3 columns end" %>
-    <% end %>
-
-    <div class="<%= classes %>">
-      <a class="area-card text-center" href="<%= area_path id: area.id %>">
-        <div class="area-card-content">
-          <span class="title"><%= area.name %></span>
-          <span class="text"><%= area.description %></span>
-        </div>
-      </a>
-    </div>
-  <% end %>
-</div>
+<%= render 'shared/footer' %>
 
 <% content_for :script do %>
 <script>

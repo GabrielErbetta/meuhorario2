@@ -5,6 +5,20 @@ class ApplicationController < ActionController::Base
     @areas = Area.all
   end
 
+  def contact
+  end
+
+  def send_contact
+    data = {}
+    data['name'] = params[:name]
+    data['email'] = params[:email]
+    data['message'] = params[:message]
+
+    ContactMailer.contact(data).deliver_now
+
+    redirect_to root_path
+  end
+
   def export_schedule_pdf
     @classes = {}
 

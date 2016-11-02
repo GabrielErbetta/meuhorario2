@@ -7,7 +7,7 @@
     <a class="accordion-title">Pré-Requisitos:</a>
     <div class="accordion-content" data-tab-content>
       <% if @pre_requisites.blank? %>
-        <div>Esta matéria não é do seu curso ou não possui nenhum pré-requisito.</div>
+        <div>Esta matéria não é do seu curso ou não tem nenhum pré-requisito.</div>
       <% else %>
         <div class="small-12 columns no-padding">
           <ul class="modal-block-list">
@@ -37,17 +37,58 @@
     </div>
   </li>
 
+  <li class="accordion-item is-active" data-accordion-item>
+    <a class="accordion-title">Turmas Ofertadas para o Curso:</a>
+    <div class="accordion-content schedules" data-tab-content>
+      <% if @available_discipline_classes.blank? %>
+        <div>Esta matéria não tem nenhuma turma ofertada para o seu curso.</div>
+      <% else %>
+        <div class="small-12 columns">
+          <ul class="modal-block-list">
+            <% @available_discipline_classes.sort_by{ |dc| dc.class_number }.each do |dc| %>
+              <li id="<%= "#{@discipline.code}-#{dc.class_number}" %>" class-number="<%= dc.class_number %>" class="block-list-item schedule row">
+                <div class="small-12 columns class-number no-padding">
+                  <div class="small-5 columns"><%= dc.class_number %></div>
+                  <div class="small-7 columns"><%= @course_class_offers[dc.id].vacancies %> vagas</div>
+                </div>
+                <div class="small-12 columns">
+                  <% dc.schedules.reverse.each do |s| %>
+                    <div class="row">
+                      <div class="small-5 columns">
+                        <div class="small-4 columns no-padding">
+                          <%= "#{s.day_friendly}" %>
+                        </div>
+                        <div class="small-8 columns no-padding">
+                          <%= "#{s.start_hour_friendly} às #{s.end_hour_friendly}" %>
+                        </div>
+                      </div>
+                      <div class="small-7 columns">
+                        <% s.professors.each do |p| %>
+                          <div><%= p.name %></div>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </li>
+
   <li class="accordion-item" data-accordion-item>
-    <a class="accordion-title">Turmas e Horários:</a>
+    <a class="accordion-title">Outras Turmas:</a>
     <div class="accordion-content schedules" data-tab-content>
       <% if @discipline_classes.blank? %>
-        <div>Esta matéria não tem nenhuma turma cadastrada.</div>
+        <div>Esta matéria não tem nenhuma outra turma cadastrada.</div>
       <% else %>
         <div class="small-12 columns">
           <ul class="modal-block-list">
             <% @discipline_classes.sort_by{ |dc| dc.class_number }.each do |dc| %>
               <li id="<%= "#{@discipline.code}-#{dc.class_number}" %>" class-number="<%= dc.class_number %>" class="block-list-item schedule row">
-                <div class="small-12 columns class-number">
+                <div class="small-12 columns class-number no-padding">
                   <%= dc.class_number %>
                 </div>
                 <div class="small-12 columns">

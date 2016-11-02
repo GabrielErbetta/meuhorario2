@@ -18,10 +18,18 @@ class DisciplinesController < ApplicationController
       end
     end
 
-    @discipline_classes = @discipline.discipline_classes
+    @discipline_classes = @discipline.discipline_classes.includes(discipline_class_offers: :courses)
+    @available_discipline_classes = []
+    @course_class_offers = {}
 
     schedules = {}
     @discipline_classes.each do |dc|
+      cco = dc.discipline_class_offers.includes(:courses).where(courses: {:id => @course.id}).first
+      if cco
+        @available_discipline_classes << dc
+        @discipline_classes -= [dc]
+        @course_class_offers[dc.id] = cco
+      end
       dc.schedules.each do |schedule|
         (schedules[dc.class_number] ||= []) << { day: schedule.day, daytime_number: schedule.daytime_number, class_count: schedule.class_count }
       end

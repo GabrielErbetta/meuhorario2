@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   root 'areas#index'
 
+  get 'contato' => 'application#contact', :as => 'contact_us'
+  post 'contato' => 'application#send_contact', :as => 'send_contact'
+
   get 'area/:id' => 'areas#show', :as => 'area'
 
   get 'curso/:code' => 'courses#show', :as => 'course_page'

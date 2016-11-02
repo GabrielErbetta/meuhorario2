@@ -2,7 +2,8 @@
 @import 'https://fonts.googleapis.com/css?family=Ruluko';
 
 
-body {
+html, body {
+  height: 100%;
   font-family: 'Ruluko', sans-serif !important;
   color: $font_color;
 }
@@ -20,6 +21,33 @@ body {
   padding-bottom: 20px;
   border-bottom: 1px solid #BBB;
   margin-bottom: 20px;
+}
+
+.wrapper {
+  min-height: 100%;
+  margin-bottom: -100px;
+
+  &:after {
+    height: 100px;
+    content: "";
+    display: block;
+  }
+}
+
+.footer {
+  height: 100px;
+  margin-top: 20px;
+  background-color: $gray;
+
+  .footer-area {
+    line-height: 100px;
+
+    .text {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: normal;
+    }
+  }
 }
 
 .info-text {

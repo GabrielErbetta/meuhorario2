@@ -1,114 +1,116 @@
-<%= render 'shared/header' %>
+<div class="wrapper">
+  <%= render 'shared/header' %>
 
-<div class="row">
-  <div class="small-12 columns text-center info-text">
-    Monte a sua grade
-    <div class="subtext"><%= @course.name %></div>
-  </div>
-
-</div>
-
-<div class="row">
-  <ul id="blockTabs" class="tabs" data-tabs>
-    <li class="tabs-title is-active" aria-selected="true"><a href="#mandatory">Obrigatórias</a></li>
-    <li class="tabs-title"><a href="#elective">Optativas</a></li>
-    <li class="tabs-title"><a href="#offered">Ofertadas</a></li>
-    <li class="tabs-title"><a href="#all">Todas</a></li>
-  </ul>
-</div>
-
-<div class="row block tabs-content" data-tabs-content="blockTabs">
-  <div id="mandatory" class="tabs-panel no-padding is-active">
-    <div class="row show-for-large">
-      <div class="medium-1 columns text-center no-padding column-title">
-        Semestre
-      </div>
-      <div class="medium-11 columns text-center column-title">
-        Disciplinas
-      </div>
+  <div class="row">
+    <div class="small-12 columns text-center info-text">
+      Monte a sua grade
+      <div class="subtext"><%= @course.name %></div>
     </div>
 
-    <% unless @semesters.blank? %>
-      <% width = 100.0 / @semesters.max_by{ |s| s ? s.size : 0 }.size %>
-      <% @semesters[1..-1].each_with_index do |semester, i| %>
-        <% if semester %>
-          <div class="row semester-row">
-            <div class="small-12 large-1 columns text-center no-padding semester">
-              <span class="number"><%= i + 1 %><span class="hide-for-large">º Semestre</span></span>
-            </div>
+  </div>
 
-            <div class="small-12 large-11 columns">
-              <% semester.each do |discipline| %>
-                <div id="<%= discipline.code %>" code="<%= discipline.code %>" click-source="curriculo" class="block-discipline discipline text-center" style="width: <%= width %>%;">
-                  <div class="text">
-                    <div class="code"><%= discipline.code %></div>
-                    <div class="name"><%= discipline.name %></div>
+  <div class="row">
+    <ul id="blockTabs" class="tabs" data-tabs>
+      <li class="tabs-title is-active" aria-selected="true"><a href="#mandatory">Obrigatórias</a></li>
+      <li class="tabs-title"><a href="#elective">Optativas</a></li>
+      <li class="tabs-title"><a href="#offered">Ofertadas</a></li>
+      <li class="tabs-title"><a href="#all">Todas</a></li>
+    </ul>
+  </div>
+
+  <div class="row block tabs-content" data-tabs-content="blockTabs">
+    <div id="mandatory" class="tabs-panel no-padding is-active">
+      <div class="row show-for-large">
+        <div class="medium-1 columns text-center no-padding column-title">
+          Semestre
+        </div>
+        <div class="medium-11 columns text-center column-title">
+          Disciplinas
+        </div>
+      </div>
+
+      <% unless @semesters.blank? %>
+        <% width = 100.0 / @semesters.max_by{ |s| s ? s.size : 0 }.size %>
+        <% @semesters[1..-1].each_with_index do |semester, i| %>
+          <% if semester %>
+            <div class="row semester-row">
+              <div class="small-12 large-1 columns text-center no-padding semester">
+                <span class="number"><%= i + 1 %><span class="hide-for-large">º Semestre</span></span>
+              </div>
+
+              <div class="small-12 large-11 columns">
+                <% semester.each do |discipline| %>
+                  <div id="<%= discipline.code %>" code="<%= discipline.code %>" click-source="curriculo" class="block-discipline discipline text-center" style="width: <%= width %>%;">
+                    <div class="text">
+                      <div class="code"><%= discipline.code %></div>
+                      <div class="name"><%= discipline.name %></div>
+                    </div>
                   </div>
-                </div>
-              <% end %>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       <% end %>
-    <% end %>
-  </div>
-
-  <div id="elective" class="tabs-panel no-padding">
-    <div class="search">
-      <i class="icon-search"></i>
-      <input id="electiveFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
     </div>
 
-    <div class="small-12 columns no-padding">
-      <ul class="block-list">
-        <% @ops.each do |op| %>
-          <li code="<%= op.code %>" click-source="optativa" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
-        <% end %>
-      </ul>
-    </div>
-  </div>
-
-  <div id="offered" class="tabs-panel no-padding">
-    <div class="search">
-      <i class="icon-search"></i>
-      <input id="offeredFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
-    </div>
-
-    <div class="small-12 columns no-padding">
-      <ul class="block-list">
-        <% @offered.each do |offered| %>
-          <li code="<%= offered.code %>" click-source="ofertada" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
-        <% end %>
-      </ul>
-    </div>
-  </div>
-
-  <div id="all" class="tabs-panel no-padding row">
-    <form id="searchForm">
-      <div class="search small-12 medium-10 columns">
+    <div id="elective" class="tabs-panel no-padding">
+      <div class="search">
         <i class="icon-search"></i>
-        <input id="allinput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
-      </div>
-      <div class="small-12 medium-2 columns">
-        <button id="buttonS" type="submit" class="button expanded">Buscar</button>
+        <input id="electiveFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
       </div>
 
-      <div class="small-12 columns">
-        <ul id="allBlockList" class="block-list">
+      <div class="small-12 columns no-padding">
+        <ul class="block-list">
+          <% @ops.each do |op| %>
+            <li code="<%= op.code %>" click-source="optativa" class="block-list-item list-item-discipline elective-discipline discipline"><%= "#{op.code} - #{op.name}" %></li>
+          <% end %>
         </ul>
       </div>
     </div>
-  </form>
-</div>
 
-<div class="row">
-  <div class="small-12 columns">
-    <%= render partial: 'schedule_table', locals: { table_id: 'largeTable', table_class: 'schedule-table large-table' } %>
+    <div id="offered" class="tabs-panel no-padding">
+      <div class="search">
+        <i class="icon-search"></i>
+        <input id="offeredFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
+      </div>
+
+      <div class="small-12 columns no-padding">
+        <ul class="block-list">
+          <% @offered.each do |offered| %>
+            <li code="<%= offered.code %>" click-source="ofertada" class="block-list-item list-item-discipline offered-discipline discipline"><%= "#{offered.code} - #{offered.name}" %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <div id="all" class="tabs-panel no-padding row">
+      <form id="searchForm">
+        <div class="search small-12 medium-10 columns">
+          <i class="icon-search"></i>
+          <input id="allinput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Nome ou código da disciplina" />
+        </div>
+        <div class="small-12 medium-2 columns">
+          <button id="buttonS" type="submit" class="button expanded">Buscar</button>
+        </div>
+
+        <div class="small-12 columns">
+          <ul id="allBlockList" class="block-list">
+          </ul>
+        </div>
+      </div>
+    </form>
   </div>
 
-  <div class="small-12 columns">
-    <span id="goToTop" class="go-to-top">▲ Topo</span>
-    <div id="exportPdf" class="button export-button float-right">Exportar como PDF</div>
+  <div class="row">
+    <div class="small-12 columns">
+      <%= render partial: 'schedule_table', locals: { table_id: 'largeTable', table_class: 'schedule-table large-table' } %>
+    </div>
+
+    <div class="small-12 columns">
+      <span id="goToTop" class="go-to-top">▲ Topo</span>
+      <div id="exportPdf" class="button export-button float-right">Exportar como PDF</div>
+    </div>
   </div>
 </div>
 
@@ -129,6 +131,8 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+
+<%= render 'shared/footer' %>
 
 <% content_for :script do %>
 <script>
@@ -263,7 +267,6 @@
         "codigo_turma": classNumber,
       });
 
-      $('html,body').animate({scrollTop: $("#largeTable").offset().top}, 500);
       event.stopPropagation();
       event.preventDefault();
     });
