@@ -8,6 +8,6 @@ class AreasController < ApplicationController
 
     @name        = area.name
     @description = area.description
-    @courses     = area.courses
+    @courses     = area.courses.order(:name)
   end
 end
