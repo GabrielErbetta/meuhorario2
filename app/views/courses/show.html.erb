@@ -356,6 +356,7 @@
 
   $("#exportPdf").click(function() {
     var mixpanel_params = selectedSchedules;
+    mixpanel_params['nome_curso'] = "<%= @course.name %>";
     mixpanel.track("Exportou PDF das turmas", $.extend(true, [], selectedSchedules));
 
     var url = "<%= export_schedule_pdf_path %>.pdf?" + $.param(selectedSchedules);
