@@ -1,10 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  def index
-    @areas = Area.all
-  end
-
   def contact
   end
 
