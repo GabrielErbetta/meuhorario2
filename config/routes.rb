@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+=begin
   root 'application#updating'
   get '*path' => redirect('/')
+=end
 
-=begin
   root 'areas#index'
 
   get 'contato' => 'application#contact', :as => 'contact_us'
@@ -27,5 +28,4 @@ Rails.application.routes.draw do
   get 'crawl_classes' => 'admin#crawl_classes', :as => 'crawl_classes'
   get 'titleize' => 'admin#titleize', :as => 'titleize'
   get 'clear_db' => 'admin#clear_db', :as => 'clear_db'
-=end
 end

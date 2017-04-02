@@ -5,23 +5,28 @@
     <div class="small-12 columns text-center info-text">
       <%= @name %>
       <div class="subtext"><%= @description %></div>
+      <% if @courses.blank? %>
+        <div class="subtext">Área ainda sem guias de matrícula para 2017.1.</div>
+      <% end %>
     </div>
   </div>
 
-  <div class="row block">
-    <div class="search">
-      <i class="icon-search"></i>
-      <input id="coursesFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Digite o nome do seu curso" />
-    </div>
+  <% if @courses.present? %>
+    <div class="row block">
+      <div class="search">
+        <i class="icon-search"></i>
+        <input id="coursesFilterInput" class="search-bar small-12 large-offset-1 large-10 columns" type="text" placeholder="Digite o nome do seu curso" />
+      </div>
 
-    <div class="small-12 columns no-padding">
-      <ul class="block-list">
-        <% @courses.each do |course| %>
-          <a href="<%= course_page_path course.code %>"><li class="block-list-item course"><%= "#{course.code} - #{course.name}" %></li></a>
-        <% end %>
-      </ul>
+      <div class="small-12 columns no-padding">
+        <ul class="block-list">
+          <% @courses.each do |course| %>
+            <a href="<%= course_page_path course.code %>"><li class="block-list-item course"><%= "#{course.code} - #{course.name}" %></li></a>
+          <% end %>
+        </ul>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>
 
 <%= render 'shared/footer' %>
