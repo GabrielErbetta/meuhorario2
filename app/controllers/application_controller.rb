@@ -47,4 +47,7 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  def updating
+  end
 end
