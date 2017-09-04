@@ -189,6 +189,8 @@ namespace :crawler do
 
         course_code = '316' if course_code == '301'
 
+        next if course_code.in? ['217', '218', '220', '221', '328', '847']
+
         Course.where('code LIKE ?', "#{course_code}%").each { |c| (course_hash[course_code] ||= []) << c }
 
         course_hash.each do |course_code, courses|
