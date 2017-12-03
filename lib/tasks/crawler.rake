@@ -37,7 +37,7 @@ namespace :crawler do
 
 
   desc 'Crawl the disciplines of every known course'
-  task :disciplines => :environment do
+  task :disciplines => [:environment, :courses] do
     puts '-----------------------------------------------------------------------'
     puts '-> Starting disciplines crawling...'
 
@@ -66,12 +66,19 @@ namespace :crawler do
           name = columns[3].css('a').text.strip
           name = columns[3].text.strip if name == ""
 
+          curriculum = nil
+          discipline_link = columns[3].css('a')
+          if discipline_link.size == 1 && discipline_link.first.attr('href') =~ /nuPerInicial=(\d+)/
+            curriculum = $1
+          end
+
           discipline = Discipline.find_by_code code
 
           unless discipline
             discipline = Discipline.new
             discipline.code = code
             discipline.name = name
+            discipline.curriculum = curriculum
             discipline.save
           end
 
