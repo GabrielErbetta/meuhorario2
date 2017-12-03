@@ -98,6 +98,27 @@ namespace :crawler do
     puts '-----------------------------------------------------------------------'
   end
 
+  desc 'Crawl discipline info'
+  task :discipline_infos => :environment do
+    puts '-----------------------------------------------------------------------'
+    puts '-> Starting disciplines info crawling...'
+
+    require 'rubygems'
+    require 'mechanize'
+
+    Discipline.all.order(:name).each do |discipline|
+      puts "    Crawling #{discipline.code} - #{discipline.name}"
+
+      agent = Mechanize.new
+      hub = agent.get "https://alunoweb.ufba.br/SiacWWW/ExibirEmentaPublico.do?cdDisciplina=#{discipline.code}&nuPerInicial=#{discipline.curriculum}"
+
+      body = hub.body.force_encoding("iso-8859-1").encode('utf-8')
+      if body =~ /Carga Hor.ria - Total: (\d+) horas/
+        discipline.load = $1.to_i
+        discipline.save
+      end
+    end
+  end
 
   desc 'Crawl the disciplines of every known course'
   task :pre_requisites => :environment do
