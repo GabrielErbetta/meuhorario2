@@ -37,7 +37,7 @@ namespace :crawler do
 
 
   desc 'Crawl the disciplines of every known course'
-  task :disciplines => [:environment, :courses] do
+  task :disciplines => :environment do
     puts '-----------------------------------------------------------------------'
     puts '-> Starting disciplines crawling...'
 
