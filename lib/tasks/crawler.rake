@@ -57,6 +57,7 @@ namespace :crawler do
         rows = table.css('tr')[2..-1]
 
         semester = nil
+        next if rows.blank?
         rows.each do |row|
           columns = row.css('td')
 
@@ -106,7 +107,7 @@ namespace :crawler do
     require 'rubygems'
     require 'mechanize'
 
-    Discipline.all.order(:name).each do |discipline|
+    Discipline.where(load: nil).order(:name).each do |discipline|
       puts "    Crawling #{discipline.code} - #{discipline.name}"
 
       agent = Mechanize.new
@@ -142,6 +143,7 @@ namespace :crawler do
         table = page.search('table')[0]
         rows = table.css('tr')[2..-1]
 
+        next if rows.blank?
         rows.each do |row|
           columns = row.css('td')
 
@@ -171,7 +173,7 @@ namespace :crawler do
               if pre_cd.blank?
                 puts "      Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
               elsif pre_cd.semester.nil? or pre_cd.semester != course_discipline.semester
-                pr = PreRequisite.new
+v                pr = PreRequisite.new
                 pr.pre_discipline = pre_cd
                 pr.post_discipline = course_discipline
                 pr.save
@@ -198,13 +200,16 @@ namespace :crawler do
     days = ['CMB', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM']
 
     agent = Mechanize.new
+    agent.open_timeout = 300
+    agent.read_timeout = 300
+
     hub = agent.get 'https://supac.ufba.br/guia-matricula-graduacao'
     area_hubs = hub.search('#conteudo').css('a').map{ |a| agent.get a['href'] }
 
     area_hubs.each do |area_hub|
       guides_list = area_hub.search('div.field-item.even')
       guide_urls = guides_list.css('a').map{ |a| URI.join(area_hub.uri, a['href']).to_s }.delete_if{ |a| a.include? 'www2.supac.ufba.br' }
-      guides = guide_urls.map { |url| Nokogiri::HTML5.get url }
+      guides = guide_urls.map { |url| Nokogiri::HTML5.get(url, {open_timeout: 300, read_timeout: 300}) }
 
       guides.each_with_index do |page, index|
         page.encoding = 'windows-1252'
@@ -231,6 +236,7 @@ namespace :crawler do
           day_number = nil
           schedule = nil
 
+          next if rows.blank?
           rows[7..-1].each do |row|
             columns = row.css('td')
 
