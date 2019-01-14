@@ -173,7 +173,7 @@ namespace :crawler do
               if pre_cd.blank?
                 puts "      Código não encontrado: #{requisite} | Disciplina: #{discipline.name} | Curso: #{course.name}"
               elsif pre_cd.semester.nil? or pre_cd.semester != course_discipline.semester
-v                pr = PreRequisite.new
+                pr = PreRequisite.new
                 pr.pre_discipline = pre_cd
                 pr.post_discipline = course_discipline
                 pr.save
