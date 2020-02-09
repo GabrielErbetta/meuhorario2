@@ -1,24 +1,23 @@
 development:
   adapter: postgresql
-  host: localhost
-  database: meuhorario_dev
+  host: database
+  database: meuhorario
   pool: 5
   username: meuhorario
-  password: UbdTL3XB
+  password: password
 
 test:
   adapter: postgresql
-  host: localhost
+  host: database
   database: meuhorario_test
   pool: 5
   username: meuhorario
-  password: UbdTL3XB
+  password: password
 
 production:
   adapter: postgresql
-  host: <%= ENV["DB_IP"] %>
-  port: <%= ENV["DB_PORT"] %>
-  database: meuhorario_production
+  host: database
+  database: meuhorario
   pool: 5
-  username: <%= ENV["DB_USER"] %>
-  password: <%= ENV["DB_PASSWORD"] %>
+  username: "<%= ENV["DB_USER"] %>"
+  password: "<%= ENV["DB_PASSWORD"] %>"

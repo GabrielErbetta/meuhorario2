@@ -1,0 +1,32 @@
+# DEVELOPMENT ENV
+version: "3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: deploy/web/Dockerfile.dev
+    depends_on:
+      - database
+    ports:
+      - "3000:3000"
+    networks:
+      - db_network
+    volumes:
+      - .:/app
+
+  database:
+    build:
+      context: deploy/database
+      dockerfile: Dockerfile
+    env_file: deploy/database/.env.dev
+    volumes:
+      - pg_data:/data/postgres
+    networks:
+      - db_network
+
+volumes:
+  pg_data:
+
+networks:
+  db_network:

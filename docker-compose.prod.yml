@@ -1,0 +1,44 @@
+# PRODUCTION ENV
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: deploy/nginx
+    depends_on:
+      - web
+      - database
+    networks:
+      - overlay
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/app/letsencrypt
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/web/Dockerfile.prod
+    env_file: deploy/web/.env.prod
+    depends_on:
+      - database
+    networks:
+      - overlay
+      - db_network
+
+  database:
+    build:
+      context: deploy/database
+    env_file: deploy/database/.env.prod
+    volumes:
+      - pg_data:/data/postgres
+    networks:
+      - db_network
+
+volumes:
+  pg_data:
+
+networks:
+  overlay:
+  db_network:

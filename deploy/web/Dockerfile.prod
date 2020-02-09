@@ -1,0 +1,21 @@
+FROM ruby:2.6-slim-buster
+
+WORKDIR /app
+ENV RAILS_ENV production
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential nodejs postgresql-client libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY Gemfile Gemfile.lock /app/
+RUN gem install bundler:1.12.5 && \
+    bundle install --jobs `grep -c processor /proc/cpuinfo` --retry 5 --without development test
+
+RUN apt-get purge -y --auto-remove build-essential libpq-dev
+
+COPY . .
+
+RUN rake environment assets:precompile
+
+CMD ["puma", "-C", "config/puma.rb"]
