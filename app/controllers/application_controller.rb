@@ -42,6 +42,7 @@ class ApplicationController < ActionController::Base
       format.pdf do
         render  pdf:          'grade_meuhorario',
                 page_size:    'A4',
+                zoom:         '1.27',
                 orientation:  'Portrait',
                 template:     'application/export_schedule_pdf.html.erb'
       end
