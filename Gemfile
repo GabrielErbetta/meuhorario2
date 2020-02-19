@@ -1,36 +1,30 @@
 source 'https://rubygems.org'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0'
-# Use Postgres as the database for Active Record
-gem 'pg'
-# Use Puma as the app server
-gem 'puma', '~> 3.12.0'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+# Rails is self-explanatory
+gem 'rails',      '~> 5.1.0'
+# PostgreSQL db client for ActiveRecord
+gem 'pg',         '~> 1.2.2'
+# Web server for the app
+gem 'puma',       '~> 4.3.0'
+# Compiles Sass code into css
+gem 'sass-rails', '~> 6.0.0'
+# Minifies JS code
+gem 'uglifier',   '~> 4.2.0'
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+# Turbolinks makes pages change without a full reload
+gem 'turbolinks',   '~> 5.2.0'
+# Jquery but as a gem
+gem 'jquery-rails', '~> 4.3.0'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+# Allows nokogiri to interact with scrapped pages
+gem 'mechanize', '~> 2.7.0'
+# Adds an HTML5 parser to nokogiri
+gem 'nokogumbo', '~> 2.0.1'
 
-gem 'mechanize'
-gem 'nokogumbo'
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
-gem 'newrelic_rpm'
+# Generates pdf files from html pages
+gem 'wicked_pdf',         '~> 1.4.0'
+# Required binary for wicked_pdf gem
+gem 'wkhtmltopdf-binary', '~> 0.12.5.4'
+
+# Sends performance/error stats to NewRelic
+gem 'newrelic_rpm', '~> 6.8.0'

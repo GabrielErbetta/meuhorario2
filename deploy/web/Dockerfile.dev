@@ -5,7 +5,7 @@ ENV RAILS_ENV development
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential nodejs postgresql-client libpq-dev \
+        build-essential make nodejs postgresql-client libpq-dev \
         libjpeg62-turbo libpng16-16 libxrender1 libfontconfig1 libxext6 && \
     rm -rf /var/lib/apt/lists/*
 
@@ -13,6 +13,6 @@ COPY Gemfile Gemfile.lock /app/
 RUN gem install bundler:1.12.5 && \
     bundle install --jobs `grep -c processor /proc/cpuinfo` --retry 5
 
-RUN apt-get purge -y --auto-remove build-essential libpq-dev
+RUN apt-get purge -y --auto-remove build-essential make libpq-dev
 
 CMD ["puma", "-C", "config/puma.rb"]
