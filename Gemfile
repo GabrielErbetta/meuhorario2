@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Rails is self-explanatory
-gem 'rails',      '~> 5.1.0'
+gem 'rails',      '~> 5.2.0'
 # PostgreSQL db client for ActiveRecord
 gem 'pg',         '~> 1.2.2'
 # Web server for the app
@@ -10,6 +10,8 @@ gem 'puma',       '~> 4.3.0'
 gem 'sass-rails', '~> 6.0.0'
 # Minifies JS code
 gem 'uglifier',   '~> 4.2.0'
+# Reduces boot times through caching
+gem 'bootsnap', '~> 1.4.0', require: false
 
 # Turbolinks makes pages change without a full reload
 gem 'turbolinks',   '~> 5.2.0'
