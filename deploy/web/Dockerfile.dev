@@ -13,6 +13,6 @@ COPY Gemfile Gemfile.lock /app/
 RUN gem install bundler:1.12.5 && \
     bundle install --jobs `grep -c processor /proc/cpuinfo` --retry 5
 
-RUN apt-get purge -y --auto-remove build-essential make libpq-dev
+RUN apt-get purge -y --auto-remove build-essential libpq-dev make
 
 CMD ["puma", "-C", "config/puma.rb"]
