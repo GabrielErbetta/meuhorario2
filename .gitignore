@@ -27,7 +27,8 @@
 
 # Ignore server files
 /shared/*
-.rbenv-vars
+/deploy/database/.env.prod
+/deploy/web/.env.prod
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
