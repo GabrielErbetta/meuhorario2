@@ -5,7 +5,7 @@ gem 'rails',      '~> 5.2.0'
 # PostgreSQL db client for ActiveRecord
 gem 'pg',         '~> 1.2.2'
 # Web server for the app
-gem 'puma',       '~> 4.3.0'
+gem 'puma',       '~> 4.3.5'
 # Compiles Sass code into css
 gem 'sass-rails', '~> 6.0.0'
 # Minifies JS code
