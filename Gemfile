@@ -19,7 +19,7 @@ gem 'turbolinks',   '~> 5.2.0'
 gem 'jquery-rails', '~> 4.3.0'
 
 # Allows nokogiri to interact with scrapped pages
-gem 'mechanize', '~> 2.7.0'
+gem 'mechanize', '~> 2.7.7'
 # Adds an HTML5 parser to nokogiri
 gem 'nokogumbo', '~> 2.0.1'
 
