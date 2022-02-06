@@ -1,22 +1,19 @@
-FROM ruby:2.6-slim-buster
+FROM ruby:2.7.5-alpine3.15
 
 WORKDIR /app
 ENV RAILS_ENV production
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential make nodejs postgresql-client libpq-dev \
-        libjpeg62-turbo libpng16-16 libxrender1 libfontconfig1 libxext6 && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache --update \
+        bash build-base libcurl nodejs yarn postgresql14-client libpq-dev \
+        libstdc++ libx11 libxrender libxext fontconfig freetype
 
 COPY Gemfile Gemfile.lock /app/
-RUN gem install bundler:1.12.5 && \
-    bundle install --jobs `grep -c processor /proc/cpuinfo` --retry 5 --without development test
+RUN gem install bundler && \
+    bundle install --jobs `grep -c processor /proc/cpuinfo` --retry 5
 
-RUN apt-get purge -y --auto-remove build-essential libpq-dev make
+RUN apk del build-base
 
 COPY . .
-
 RUN rake environment assets:precompile
 
 CMD ["puma", "-C", "config/puma.rb"]
