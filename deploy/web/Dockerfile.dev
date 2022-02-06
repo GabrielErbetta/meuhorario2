@@ -4,7 +4,7 @@ WORKDIR /app
 ENV RAILS_ENV development
 
 RUN apk add --no-cache --update \
-        bash build-base libcurl nodejs yarn postgresql-client libpq-dev \
+        bash build-base libcurl nodejs yarn postgresql14-client libpq-dev \
         libstdc++ libx11 libxrender libxext fontconfig freetype
 
 COPY Gemfile Gemfile.lock /app/
