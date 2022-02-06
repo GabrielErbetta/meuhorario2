@@ -1,2 +1,2 @@
-FROM postgres:12.1-alpine
+FROM postgres:14.1-alpine
 COPY unaccent.sql /docker-entrypoint-initdb.d

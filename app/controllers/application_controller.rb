@@ -44,7 +44,8 @@ class ApplicationController < ActionController::Base
                 page_size:    'A4',
                 zoom:         '1.27',
                 orientation:  'Portrait',
-                template:     'application/export_schedule_pdf.html.erb'
+                formats:      [ :html ],
+                template:     'application/export_schedule_pdf'
       end
     end
   end
