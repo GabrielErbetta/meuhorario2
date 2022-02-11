@@ -9,7 +9,7 @@ gem 'listen',      '~> 3.7.1'
 # PostgreSQL db client for ActiveRecord
 gem 'pg',          '~> 1.3.1'
 # Web server for the app
-gem 'puma',        '~> 5.6.1'
+gem 'puma',        '~> 5.6.2'
 # Timezones database, overrides legacy OS timezone database
 gem 'tzinfo-data', '>= 1'
 # Allows nokogiri to interact with scrapped pages
