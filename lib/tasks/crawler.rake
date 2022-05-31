@@ -190,7 +190,6 @@ namespace :crawler do
 
   desc 'Crawl all courses class pages'
   task :classes => :environment do
-    require 'nokogumbo'
     require 'rubygems'
     require 'mechanize'
 
@@ -411,7 +410,6 @@ namespace :crawler do
 
   desc 'Downcase and capitalize discipline names and upcase roman numbers'
   task :areas => :environment do
-    require 'nokogumbo'
     require 'rubygems'
     require 'mechanize'
 
