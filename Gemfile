@@ -17,17 +17,19 @@ gem 'mechanize',   '~> 2.8.4'
 
 # ASSETS
 # Compiles assets for production
-gem 'sprockets-rails'
+gem 'sprockets-rails', '~> 3.4.2'
 # Compiles Sass code into css
-gem 'sass-rails', '~> 6.0.0'
+gem 'sass-rails',      '~> 6.0.0'
 # Minifies JS code
-gem 'uglifier',   '~> 4.2.0'
+gem 'uglifier',        '~> 4.2.0'
 
 # FRONT END
 # Turbolinks makes pages change without a full reload
 gem 'turbolinks',   '~> 5.2.0'
 # Jquery but as a gem
 gem 'jquery-rails', '~> 4.3.0'
+# Google Recaptcha for contact form
+gem 'recaptcha',    '~> 5.10.0'
 
 # PDF GENERATION
 # Generates pdf files from html pages

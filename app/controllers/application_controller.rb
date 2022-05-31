@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   end
 
   def send_contact
+    return redirect_to(contact_us_path) if !verify_recaptcha
+
     data = {}
     data['name'] = params[:name]
     data['email'] = params[:email]
