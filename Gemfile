@@ -13,7 +13,7 @@ gem 'puma',        '~> 5.6.4'
 # Timezones database, overrides legacy OS timezone database
 gem 'tzinfo-data', '>= 1'
 # Allows nokogiri to interact with scrapped pages
-gem 'mechanize',   '~> 2.8.4'
+gem 'mechanize',   '~> 2.8.5'
 
 # ASSETS
 # Compiles assets for production
