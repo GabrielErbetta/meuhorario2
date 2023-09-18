@@ -20,7 +20,8 @@ class ApplicationController < ActionController::Base
   def export_schedule_pdf
     @classes = {}
 
-    request.GET.each do |discipline_code, class_number|
+    request.GET.each do |discipline_code, discipline_data|
+      class_number = discipline_data['classNumber']
       discipline = Discipline.find_by_code discipline_code
       dc = DisciplineClass.includes(:discipline).where(discipline: discipline, class_number: class_number).first
 

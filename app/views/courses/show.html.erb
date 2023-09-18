@@ -108,7 +108,11 @@
     </div>
 
     <div class="small-12 columns">
-      <span id="goToTop" class="go-to-top">▲ Topo</span>
+      <span id="goToTop" class="table-footer go-to-top">▲ Topo</span>
+      <span id="clearSchedule" class="table-footer clear-schedule"><b>✕</b> Limpar grade</span>
+    </div>
+
+    <div class="small-12 columns">
       <div id="exportPdf" class="button export-button float-right">Exportar como PDF</div>
     </div>
   </div>
@@ -228,11 +232,11 @@
         $(".schedule.selected").removeClass("selected");
       }
 
-      if (selectedSchedules[code] && selectedSchedules[code] == classNumber) {
+      if (selectedSchedules[code] && selectedSchedules[code].classNumber == classNumber) {
         delete selectedSchedules[code];
       }
       else {
-        selectedSchedules[code] = classNumber;
+        selectedSchedules[code] = { classNumber: classNumber, schedules: schedules[classNumber] };
         $(this).addClass("selected");
 
         var commonClasses = getBgColor() + " schedule-" + code;
@@ -260,6 +264,8 @@
         updateDisciplineEvents('table-discipline-modal', false);
         updateDisciplineEvents('table-discipline-large', true);
       }
+
+      storeScheduleInStorage();
 
       mixpanel.track("Selecionou turma de disciplina", {
         "nome_curso": "<%= @course.name %>",
@@ -296,7 +302,7 @@
         $("#content").foundation();
 
         if (selectedSchedules[code]) {
-          $("#" + code + "-" + selectedSchedules[code]).addClass('selected');
+          $("#" + code + "-" + selectedSchedules[code].classNumber).addClass('selected');
         }
 
         updateDisciplineEvents("modal-discipline", false);
@@ -313,6 +319,46 @@
       event.preventDefault();
     });
   }
+
+  function storeScheduleInStorage() {
+    localStorage.setItem('<%= params[:code] %>', JSON.stringify(selectedSchedules));
+  }
+
+  function loadScheduleFromStorage() {
+    const previousSchedules = JSON.parse(localStorage.getItem('<%= params[:code] %>'));
+
+    for (const code in previousSchedules) {
+      const classNumber = previousSchedules[code].classNumber;
+      const schedules = previousSchedules[code].schedules;
+
+      selectedSchedules[code] = { classNumber: classNumber, schedules: schedules };
+
+      var commonClasses = getBgColor() + " schedule-" + code;
+      var divModal = '<div code="' + code +'" click-source="grade-modal" class="' + commonClasses + ' table-discipline-modal">' + code + '</div>';
+      var divLarge = '<div code="' + code +'" click-source="grade" class="' + commonClasses + ' table-discipline-large">' + code + '</div>';
+
+      schedules.forEach(function(schedule) {
+        for (var i = 0; i < schedule.class_count; i++) {
+          var $tdModal = $("#modalTable").find(".d" + schedule.day + "h" + (schedule.daytime_number + i));
+          var $tdLarge = $("#largeTable").find(".d" + schedule.day + "h" + (schedule.daytime_number + i));
+
+          if ($tdModal.children().size() > 0) {
+            $tdModal.addClass('error');
+            $tdLarge.addClass('error');
+          }
+
+          $tdModal.append(divModal);
+          $tdLarge.append(divLarge);
+        }
+      });
+
+      $(".schedule-" + code).mouseenter(highlightSchedules(".schedule-" + code, '600'));
+      $(".schedule-" + code).mouseleave(highlightSchedules(".schedule-" + code, ''));
+    }
+
+    updateDisciplineEvents('table-discipline-modal', false);
+    updateDisciplineEvents('table-discipline-large', true);
+  };
 
   $("#electiveFilterInput").on("input", function() {
     filterList("elective-discipline", $(this).val());
@@ -354,6 +400,29 @@
     $('html,body').animate({scrollTop: $("#blockTabs").offset().top}, 500);
   });
 
+  $("#clearSchedule").click(function() {
+    for (const code in selectedSchedules) {
+      var $schedule_codes = $(".schedule-" + code);
+      var $tds = $schedule_codes.map(function() { return $(this).parent(); });
+
+      if ($tds.length > 0) {
+        removeBgColor($schedule_codes[0].className.split(/\s+/));
+
+        $schedule_codes.remove();
+
+        $tds.each(function() {
+          if ($(this).hasClass("error") && $(this).children().size() < 2)
+            $(this).removeClass("error");
+        });
+      }
+
+      $(".schedule.selected").removeClass("selected");
+    }
+
+    selectedSchedules = {};
+    storeScheduleInStorage();
+  });
+
   $("#exportPdf").click(function() {
     var mixpanel_params = selectedSchedules;
     mixpanel_params['nome_curso'] = "<%= @course.name %>";
@@ -381,6 +450,9 @@
 
     // Randomize background colors
     shuffle(backgroundColors);
+
+    // Load previous schedule from storage
+    loadScheduleFromStorage();
 
     mixpanel.track("Acessou página de curso", { "nome_curso": "<%= @course.name %>" });
   });

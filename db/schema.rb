@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2017_12_03_165136) do
-
+ActiveRecord::Schema[7.0].define(version: 2017_12_03_165136) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -33,8 +32,8 @@ ActiveRecord::Schema.define(version: 2017_12_03_165136) do
     t.string "nature", limit: 3
     t.integer "course_id"
     t.integer "discipline_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["course_id"], name: "index_course_disciplines_on_course_id"
     t.index ["discipline_id"], name: "index_course_disciplines_on_discipline_id"
   end
@@ -42,8 +41,8 @@ ActiveRecord::Schema.define(version: 2017_12_03_165136) do
   create_table "courses", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "code"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "curriculum"
     t.integer "area_id"
     t.index ["area_id"], name: "index_courses_on_area_id"
@@ -65,8 +64,8 @@ ActiveRecord::Schema.define(version: 2017_12_03_165136) do
   create_table "disciplines", id: :serial, force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "curriculum"
     t.integer "load"
     t.index ["code"], name: "index_disciplines_on_code"
@@ -75,8 +74,8 @@ ActiveRecord::Schema.define(version: 2017_12_03_165136) do
   create_table "pre_requisites", id: :serial, force: :cascade do |t|
     t.integer "pre_discipline_id"
     t.integer "post_discipline_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["post_discipline_id"], name: "index_pre_requisites_on_post_discipline_id"
     t.index ["pre_discipline_id"], name: "index_pre_requisites_on_pre_discipline_id"
   end
