@@ -188,14 +188,25 @@
   }
 }
 
-.go-to-top {
-  @include transition();
-  padding-left: 5px;
-  line-height: 50px;
+.table-footer {
   cursor: pointer;
+  margin-bottom: 16px;
 
   &:hover {
     font-weight: 600;
+  }
+}
+
+.go-to-top {
+  padding-left: 5px;
+}
+
+.clear-schedule {
+  padding-right: 5px;
+  float: right;
+
+  b {
+    vertical-align: middle;
   }
 }
 

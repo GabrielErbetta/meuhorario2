@@ -1,11 +1,11 @@
-FROM ruby:3.1.0-alpine3.15
+FROM ruby:3.1.4-alpine3.17
 
 WORKDIR /app
 ENV RAILS_ENV production
 
 RUN apk add --no-cache --update \
         bash build-base libcurl nodejs yarn postgresql14-client libpq-dev \
-        libstdc++ libx11 libxrender libxext fontconfig freetype
+        libstdc++ libx11 libxrender libxext fontconfig freetype libssl1.1
 
 COPY Gemfile Gemfile.lock /app/
 RUN gem install bundler && \
