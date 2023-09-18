@@ -27,7 +27,7 @@ gem 'uglifier',        '~> 4.2.0'
 # Turbolinks makes pages change without a full reload
 gem 'turbolinks',   '~> 5.2.1'
 # Jquery but as a gem
-gem 'jquery-rails', '~> 4.3.5'
+gem 'jquery-rails', '~> 4.4.0'
 # Google Recaptcha for contact form
 gem 'recaptcha',    '~> 5.10.1'
 
