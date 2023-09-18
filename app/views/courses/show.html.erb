@@ -321,11 +321,11 @@
   }
 
   function storeScheduleInStorage() {
-    localStorage.setItem('selectedSchedules', JSON.stringify(selectedSchedules));
+    localStorage.setItem('<%= params[:code] %>', JSON.stringify(selectedSchedules));
   }
 
   function loadScheduleFromStorage() {
-    const previousSchedules = JSON.parse(localStorage.getItem('selectedSchedules'));
+    const previousSchedules = JSON.parse(localStorage.getItem('<%= params[:code] %>'));
 
     for (const code in previousSchedules) {
       const classNumber = previousSchedules[code].classNumber;
