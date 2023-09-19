@@ -408,56 +408,15 @@ namespace :crawler do
     puts '-----------------------------------------------------------------------'
   end
 
-  desc 'Downcase and capitalize discipline names and upcase roman numbers'
-  task :areas => :environment do
-    require 'rubygems'
-    require 'mechanize'
+  desc 'Scrapes course areas from SUPAC'
+  task areas: :environment do
+    processor_cores = `grep -c processor /proc/cpuinfo`.to_i
+    threads = [4, processor_cores].min
 
-    puts '-----------------------------------------------------------------------'
-    puts '-> Starting areas crawling...'
-    agent = Mechanize.new
-    hub = agent.get 'https://supac.ufba.br/guia-matricula-graduacao'
-    areas = hub.search('#conteudo').css('a')
+    areas_scraper = Scrapers::Areas.new(threads:)
 
-    areas.each do |a|
-      area_text = a.children[0].text.split('-').map { |string| string.gsub(/\A[[:space:]]+|[[:space:]]+\z/, '') }
-
-      if area_text[0].include? 'Bacharelados Interdisciplinares'
-        name = 'BI'
-        description = area_text[0]
-      else
-        name = area_text[0]
-        description = area_text[1]
-      end
-
-      area = Area.where(name: name).first
-      unless area
-        area = Area.new
-        area.name = name
-        area.description = description
-        area.save
-      end
-
-      area_hub = agent.get a['href']
-      guides_list = area_hub.search('div.field-item.even')
-      guide_urls = guides_list.css('a').map { |a| a['href'] }
-
-      guide_urls.each do |guide_url|
-        course_code = guide_url.split('/')[-1]
-        course_code.slice! '.html'
-        course_code.slice! '.htm'
-        course_code = course_code.split('_')[0]
-
-        course_code = '316' if course_code == '301'
-
-        Course.where('code LIKE ?', "#{course_code}%").each do |course|
-          course.area = area
-          course.save
-        end
-      end
-    end
-
+    puts '-> Starting areas scraping...'
+    areas_scraper.scrape
     puts '-> Finished'
-    puts '-----------------------------------------------------------------------'
   end
 end
