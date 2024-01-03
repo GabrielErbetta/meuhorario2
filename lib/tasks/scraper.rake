@@ -1,102 +1,56 @@
-namespace :crawler do
-
-  desc 'Crawl courses codes, names and curriculums'
-  task :courses => :environment do
-    puts '-----------------------------------------------------------------------'
-    puts '-> Starting courses crawling...'
-
-    require 'rubygems'
-    require 'mechanize'
-
-    agent = Mechanize.new
-    page = agent.get 'https://alunoweb.ufba.br/SiacWWW/ListaCursosEmentaPublico.do?cdGrauCurso=01'
-
-    courseAnchors = page.search('a')
-
-    courseAnchors.each do |a|
-      url = a.attribute('href').value
-
-      codeIndex = url.index('cdCurso') + 8
-      code = url[codeIndex..codeIndex + 5]
-
-      curriculumIndex = url.index('nuPerCursoInicial') + 18
-      curriculum = url[curriculumIndex..curriculumIndex + 4]
-
-      course = Course.find_by_code 'code'
-      unless course
-        course = Course.new
-        course.code = code
-        course.name = a.text
-        course.curriculum = curriculum
-        course.save
-      end
-    end
-    puts '-> Finished courses crawling'
-    puts '-----------------------------------------------------------------------'
+namespace :scraper do
+  desc 'Runs all scraper tasks in sequence'
+  task all: :environment do
+    Rake::Task['scraper:courses'].invoke
+    Rake::Task['scraper:areas'].invoke
   end
 
+  desc 'Scrapes courses info from a public courses list'
+  task courses: :environment do
+    puts '-> Starting courses scraping...'
+
+    courses_scraper = Scrapers::Courses.new
+    courses_scraper.scrape
+
+    courses = Course.all
+    puts "    #{courses.size} courses found"
+
+    puts '-> Finished'
+  end
+
+  desc 'Scrapes course areas from SUPAC'
+  task areas: :environment do
+    processor_cores = `grep -c processor /proc/cpuinfo`.to_i
+    threads = [4, processor_cores].min
+
+    puts '-> Starting areas scraping...'
+
+    areas_scraper = Scrapers::Areas.new(threads:)
+    areas_scraper.scrape
+
+    areas = Area.all
+    puts "    #{areas.size} areas found"
+
+    orphan_courses = Course.where(area: nil)
+    puts "    #{orphan_courses.size} orphan courses remain"
+
+    puts '-> Finished'
+  end
 
   desc 'Crawl the disciplines of every known course'
-  task :disciplines => :environment do
-    puts '-----------------------------------------------------------------------'
-    puts '-> Starting disciplines crawling...'
+  task disciplines: :environment do
+    processor_cores = `grep -c processor /proc/cpuinfo`.to_i
+    threads = [4, processor_cores].min
 
-    require 'rubygems'
-    require 'mechanize'
+    puts '-> Starting disciplines scraping...'
 
-    Course.all.order(:name).each do |course|
-      puts "    Crawling #{course.name}"
+    disicplines_scraper = Scrapers::Disciplines.new(threads:)
+    disicplines_scraper.scrape
 
-      agent = Mechanize.new
-      hub = agent.get "https://alunoweb.ufba.br/SiacWWW/CurriculoCursoGradePublico.do?cdCurso=#{course.code}&nuPerCursoInicial=#{course.curriculum}"
+    disciplines = Discipline.all
+    puts "    #{disciplines.size} disciplines found"
 
-      for i in 0..1
-        page = hub.links[i].click
-
-        table = page.search('table')[0]
-        rows = table.css('tr')[2..-1]
-
-        semester = nil
-        next if rows.blank?
-        rows.each do |row|
-          columns = row.css('td')
-
-          semester = columns[0].text.to_i unless columns[0].text.blank?
-          nature = columns[1].text
-          code = columns[2].text
-          name = columns[3].css('a').text.strip
-          name = columns[3].text.strip if name == ""
-
-          curriculum = nil
-          discipline_link = columns[3].css('a')
-          if discipline_link.size == 1 && discipline_link.first.attr('href') =~ /nuPerInicial=(\d+)/
-            curriculum = $1
-          end
-
-          discipline = Discipline.find_by_code code
-
-          unless discipline
-            discipline = Discipline.new
-            discipline.code = code
-            discipline.name = name
-            discipline.curriculum = curriculum
-            discipline.save
-          end
-
-          course_discipline = CourseDiscipline.where(course_id: course.id, discipline_id: discipline.id)
-          if course_discipline.blank?
-            course_discipline = CourseDiscipline.new
-            course_discipline.semester = semester
-            course_discipline.nature = nature
-            course_discipline.discipline = discipline
-            course_discipline.course = course
-            course_discipline.save
-          end
-        end
-      end
-    end
-    puts '-> Finished disciplines crawling'
-    puts '-----------------------------------------------------------------------'
+    puts '-> Finished'
   end
 
   desc 'Crawl discipline info'
@@ -406,17 +360,5 @@ namespace :crawler do
     puts '-> Finished'
 
     puts '-----------------------------------------------------------------------'
-  end
-
-  desc 'Scrapes course areas from SUPAC'
-  task areas: :environment do
-    processor_cores = `grep -c processor /proc/cpuinfo`.to_i
-    threads = [4, processor_cores].min
-
-    areas_scraper = Scrapers::Areas.new(threads:)
-
-    puts '-> Starting areas scraping...'
-    areas_scraper.scrape
-    puts '-> Finished'
   end
 end

@@ -13,32 +13,32 @@ class AdminController < ApplicationController
   end
 
   def crawl_courses
-    call_rake 'crawler:courses'
+    call_rake 'scraper:courses'
     render 'index'
   end
 
   def crawl_areas
-    call_rake 'crawler:areas'
+    call_rake 'scraper:areas'
     render 'index'
   end
 
   def crawl_disciplines
-    call_rake 'crawler:disciplines'
+    call_rake 'scraper:disciplines'
     render 'index'
   end
 
   def crawl_pre_reqs
-    call_rake 'crawler:pre_requisites'
+    call_rake 'scraper:pre_requisites'
     render 'index'
   end
 
   def crawl_classes
-    call_rake 'crawler:classes'
+    call_rake 'scraper:classes'
     render 'index'
   end
 
   def titleize
-    call_rake 'crawler:titleize'
+    call_rake 'scraper:titleize'
     render 'index'
   end
 
