@@ -10,9 +10,18 @@ module Concurrently
 
   # Spawns a thread that runs 'object.method_name' in the 'queue'
   def self.spawn_thread(queue, object, method_name)
+    retries = 3
+
     Thread.new do
       while (args = queue.pop(true))
         object.send(method_name, *args)
+      end
+    rescue Net::OpenTimeout
+      retries -= 1
+
+      if retries > 0
+        sleep 10
+        retry
       end
     rescue ThreadError
       nil

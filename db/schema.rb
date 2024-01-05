@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_29_030901) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_04_201759) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -67,7 +67,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_29_030901) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "curriculum"
-    t.integer "load"
+    t.integer "hours"
     t.index ["code"], name: "index_disciplines_on_code", unique: true
   end
 

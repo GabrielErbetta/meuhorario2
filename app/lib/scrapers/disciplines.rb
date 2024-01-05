@@ -41,11 +41,15 @@ module Scrapers
       return if rows.blank?
 
       current_semester = nil
+
       rows.each do |row|
         semester, nature, code, name, curriculum = discipline_row_data(row)
 
+        semester ||= current_semester if nature == 'OB'
+        current_semester = semester
+
         discipline = store_discipline(code, name, curriculum)
-        store_course_discipline(course, discipline, semester || current_semester, nature)
+        store_course_discipline(course, discipline, semester, nature)
       end
     end
 
@@ -53,7 +57,7 @@ module Scrapers
     def discipline_row_data(row)
       cells = row.css('td')
 
-      semester = cells[0].text&.to_i
+      semester = cells[0].text.presence&.to_i
       nature = cells[1].text&.upcase
       code = cells[2].text
       name = Titleizer.discipline_name(cells[3].text)
@@ -67,13 +71,13 @@ module Scrapers
       link = cell.at_css('a')&.attr('href')
       return if link.blank?
 
-      link.scan(/nuPerInicial=(\d+)/)&.first
+      link.match(/nuPerInicial=(\d+)/)&.captures&.first
     end
 
     # Stores the discipline preventing duplicates
     def store_discipline(code, name, curriculum)
-      Discipline.create(code:, name:, curriculum:)
-    rescue ActiveRecord::RecordNotUnique
+      Discipline.create!(code:, name:, curriculum:)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
       Discipline.find_by(code:)
     end
 
