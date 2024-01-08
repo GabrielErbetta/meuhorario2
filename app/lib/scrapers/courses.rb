@@ -25,7 +25,6 @@ module Scrapers
         href_params = parse_course_uri(href)
 
         Course.where(code: href_params[:code]).first_or_create(
-          code: href_params[:code],
           name: Titleizer.course_name(anchor.text),
           curriculum: href_params[:curriculum]
         )

@@ -84,7 +84,7 @@ module Scrapers
     # Stores the course discipline
     def store_course_discipline(course, discipline, semester, nature)
       CourseDiscipline.where(course:, discipline:)
-                      .first_or_create(course:, discipline:, semester:, nature:)
+                      .first_or_create(semester:, nature:)
     end
   end
 end

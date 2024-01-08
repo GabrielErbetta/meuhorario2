@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_04_201759) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_08_140224) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -99,7 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_201759) do
     t.integer "discipline_class_id"
     t.integer "end_hour"
     t.integer "end_minute"
-    t.integer "first_class_number"
+    t.integer "first_class_slot"
     t.integer "class_count"
     t.index ["discipline_class_id"], name: "index_schedules_on_discipline_class_id"
   end

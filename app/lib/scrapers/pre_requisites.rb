@@ -81,6 +81,7 @@ module Scrapers
       pre_requisites
     end
 
+    # Finds a course_discipline object by passing the course model and the discipline code
     def find_course_discipline(course, code)
       CourseDiscipline.find_by(
         course:,
@@ -94,7 +95,7 @@ module Scrapers
 
       pre_requisite_codes.each do |code|
         pre_req_cd = find_course_discipline(course, code)
-        next if pre_req_cd.semester == course_discipline.semester
+        next if !pre_req_cd || pre_req_cd.semester == course_discipline.semester
 
         PreRequisite.where(
           pre_discipline: pre_req_cd,

@@ -36,17 +36,18 @@ module Scrapers
     private
 
     # Receives the name and description of area, strips spaces and stores it as an Area object
-    #   Returns an Area object
+    # Returns an Area object
     def store_area(name, description)
       name = Titleizer.super_strip(name)
       description = Titleizer.super_strip(description)
 
-      if name == 'Bacharelados Interdisciplinares'
+      # Custom naming for BI area
+      if name == 'Bacharelados Interdisciplinares e Tecnólogos'
         description = name
         name = 'BI'
       end
 
-      Area.where(name:).first_or_create(name:, description:)
+      Area.where(name:).first_or_create(description:)
     end
 
     # Scrapes the courses of the area in href and updates the Area association of the related Courses
