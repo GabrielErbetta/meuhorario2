@@ -17,7 +17,9 @@ module Scrapers
       courses = Course.all
 
       courses.find_each { |course| @queue.push([course]) }
-      Concurrently.run @queue, threads, self, :scrape_course
+
+      runner = ConcurrentRunner.new(queue: @queue, threads:)
+      runner.run self, :scrape_course
 
       PreRequisite.count
     end

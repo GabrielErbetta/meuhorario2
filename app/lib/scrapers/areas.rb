@@ -27,7 +27,9 @@ module Scrapers
         @queue.push([area, href])
       end
 
-      Concurrently.run @queue, threads, self, :update_courses
+      runner = ConcurrentRunner.new(queue: @queue, threads:)
+      runner.run self, :update_courses
+
       update_orphan_courses
 
       Area.count

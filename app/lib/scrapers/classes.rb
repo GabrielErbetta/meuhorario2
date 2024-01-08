@@ -24,7 +24,8 @@ module Scrapers
         @queue.push([guide])
       end
 
-      Concurrently.run @queue, threads, self, :scrape_classes
+      runner = ConcurrentRunner.new(queue: @queue, threads:)
+      runner.run self, :scrape_classes
 
       DisciplineClass.count
     end

@@ -18,7 +18,9 @@ module Scrapers
       disciplines = Discipline.where(hours: nil)
 
       disciplines.find_each { |discipline| @queue.push([discipline]) }
-      Concurrently.run @queue, threads, self, :scrape_discipline_infos
+
+      runner = ConcurrentRunner.new(queue: @queue, threads:)
+      runner.run self, :scrape_discipline_infos
 
       Discipline.where.not(hours: nil).count
     end
