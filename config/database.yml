@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   host: database
   database: meuhorario
-  pool: 5
+  pool: 10
   username: meuhorario
   password: password
 
@@ -10,7 +10,7 @@ test:
   adapter: postgresql
   host: database
   database: meuhorario_test
-  pool: 5
+  pool: 10
   username: meuhorario
   password: password
 
@@ -18,6 +18,6 @@ production:
   adapter: postgresql
   host: database
   database: meuhorario
-  pool: 5
+  pool: 10
   username: "<%= ENV["DB_USER"] %>"
   password: "<%= ENV["DB_PASSWORD"] %>"

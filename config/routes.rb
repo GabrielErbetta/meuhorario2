@@ -21,11 +21,6 @@ Rails.application.routes.draw do
   get 'exportar_grade' => 'application#export_schedule_pdf', :as => 'export_schedule_pdf'
 
   get 'admin' => 'admin#index'
-  get 'crawl_courses' => 'admin#crawl_courses', :as => 'crawl_courses'
-  get 'crawl_areas' => 'admin#crawl_areas', :as => 'crawl_areas'
-  get 'crawl_disciplines' => 'admin#crawl_disciplines', :as => 'crawl_disciplines'
-  get 'crawl_pre_reqs' => 'admin#crawl_pre_reqs', :as => 'crawl_pre_reqs'
   get 'crawl_classes' => 'admin#crawl_classes', :as => 'crawl_classes'
-  get 'titleize' => 'admin#titleize', :as => 'titleize'
   get 'clear_db' => 'admin#clear_db', :as => 'clear_db'
 end

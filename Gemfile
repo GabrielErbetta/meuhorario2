@@ -3,17 +3,19 @@ ruby '3.1.4'
 
 # CORE
 # Rails is self-explanatory
-gem 'rails',       '~> 7.0.8'
+gem 'rails',            '~> 7.0.8'
 # Listens to file changes
-gem 'listen',      '~> 3.7.1'
+gem 'listen',           '~> 3.7.1'
 # PostgreSQL db client for ActiveRecord
-gem 'pg',          '~> 1.3.5'
+gem 'pg',               '~> 1.3.5'
 # Web server for the app
-gem 'puma',        '~> 5.6.7'
+gem 'puma',             '~> 5.6.7'
 # Timezones database, overrides legacy OS timezone database
-gem 'tzinfo-data', '>= 1'
+gem 'tzinfo-data',      '>= 1'
 # Allows nokogiri to interact with scrapped pages
-gem 'mechanize',   '~> 2.9.1'
+gem 'mechanize',        '~> 2.9.1'
+# Adds a progress bar that is used in scraping
+gem 'ruby-progressbar', '~> 1.13.0'
 
 # ASSETS
 # Compiles assets for production
