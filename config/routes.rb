@@ -8,9 +8,6 @@ Rails.application.routes.draw do
 
   root 'areas#index'
 
-  get 'contato' => 'application#contact', :as => 'contact_us'
-  post 'contato' => 'application#send_contact', :as => 'send_contact'
-
   get 'area/:id' => 'areas#show', :as => 'area'
 
   get 'curso/:code' => 'courses#show', :as => 'course_page'
@@ -23,4 +20,12 @@ Rails.application.routes.draw do
   get 'admin' => 'admin#index'
   get 'crawl_classes' => 'admin#crawl_classes', :as => 'crawl_classes'
   get 'clear_db' => 'admin#clear_db', :as => 'clear_db'
+
+  # CONTACT
+  get 'contato',
+      to: 'contact#show',
+      as: 'contact_show'
+  post 'contato',
+       to: 'contact#submit',
+       as: 'contact_submit'
 end

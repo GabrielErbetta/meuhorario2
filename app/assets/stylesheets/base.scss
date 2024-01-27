@@ -6,6 +6,10 @@ html, body {
   color: $font_color;
 }
 
+h1, h2, h3, h4, h5, h6, p {
+  font-family: 'Ruluko', sans-serif !important;
+}
+
 .no-padding {
   padding: 0 !important;
 }
@@ -23,7 +27,8 @@ html, body {
 
 .wrapper {
   min-height: 100%;
-  margin-bottom: -100px;
+  padding-bottom: 20px;
+  margin-bottom: -120px;
 
   &:after {
     height: 100px;
@@ -35,7 +40,7 @@ html, body {
 .footer {
   height: 100px;
   margin-top: 20px;
-  background-color: $gray;
+  background-color: $light_gray;
 
   .footer-area {
     line-height: 100px;
