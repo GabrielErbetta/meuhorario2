@@ -2,21 +2,26 @@
   <%= render 'shared/header' %>
 
   <div class="row">
-    <%= form_tag(send_contact_path, method: "post") do %>
+    <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">
+      <h3 class="text-center info-text">Contato</h3>
+      <%= render 'shared/flash' %>
+    </div>
+
+    <%= form_tag(contact_submit_path, method: "post") do %>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">Nome:</div>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">
-        <input type="text" name="name" />
+        <input type="text" name="contact[from_name]" />
       </div>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">Email:</div>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">
-        <input type="text" name="email" />
+        <input type="text" name="contact[from_email]" />
       </div>
-      <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">Mensagem:</div>
+      <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">Mensagem*:</div>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns">
-        <textarea name="message" cols="30" rows="10"></textarea>
+        <textarea name="contact[message]" cols="30" rows="10" required></textarea>
       </div>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns end">
-        <%= invisible_recaptcha_tags class: 'button float-right', text: 'Enviar' %>
+        <button class="button float-right">Enviar</button>
       </div>
     <% end %>
   </div>

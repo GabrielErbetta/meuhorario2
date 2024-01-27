@@ -1,22 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  def contact
-  end
-
-  def send_contact
-    return redirect_to(contact_us_path) if !verify_recaptcha
-
-    data = {}
-    data['name'] = params[:name]
-    data['email'] = params[:email]
-    data['message'] = params[:message]
-
-    ContactMailer.contact(data).deliver_now
-
-    redirect_to root_path
-  end
-
   def export_schedule_pdf
     @classes = {}
 

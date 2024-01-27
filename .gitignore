@@ -18,6 +18,7 @@
 !/tmp/.keep
 !/tmp/pids
 !/tmp/pids/.keep
+tmp/pids/*
 
 # Ignore Byebug command history file.
 .byebug_history
@@ -31,4 +32,4 @@
 /deploy/web/.env.prod
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+/config/credentials/production.key

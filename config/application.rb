@@ -18,17 +18,5 @@ module MeuHorario
     #
     config.time_zone = "Brasilia"
     # config.eager_load_paths << Rails.root.join("extras")
-
-    # SMTP configuration for suggestion emails
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = {
-      address: 'smtp.gmail.com',
-      port: 587,
-      domain: 'gmail.com',
-      user_name: ENV['GMAIL_USERNAME'].to_s,
-      password: ENV['GMAIL_PASSWORD'].to_s,
-      authentication: 'plain',
-      enable_starttls_auto: true
-    }
   end
 end

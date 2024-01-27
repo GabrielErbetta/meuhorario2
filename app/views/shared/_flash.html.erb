@@ -1,0 +1,9 @@
+<% flash.to_h.slice('success', 'warning', 'alert').each do |name, msg| %>
+  <div class="callout <%= name %>" data-closable>
+    <%= msg %>
+
+    <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% end %>
