@@ -15,7 +15,6 @@ services:
       - "443:443"
     volumes:
       - /etc/letsencrypt:/app/letsencrypt
-      - assets:/app/public
     restart: unless-stopped
 
   web:
@@ -25,8 +24,6 @@ services:
     env_file: deploy/web/.env.prod
     depends_on:
       - database
-    volumes:
-      - assets:/app/public
     networks:
       - overlay
       - db_network
@@ -44,7 +41,6 @@ services:
 
 volumes:
   pg_data:
-  assets:
 
 networks:
   overlay:
