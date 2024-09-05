@@ -70,11 +70,13 @@ module Scrapers
       previous_discipline_class = nil
       previous_schedule         = nil
 
+      latest_curriculum = courses.map(&:curriculum).max
+
       class_rows.each do |row|
         columns = row.css('td')
         next if columns.blank? || columns.text.blank?
 
-        discipline   = discipline_from_row(columns)
+        discipline   = discipline_from_row(columns, latest_curriculum)
         discipline ||= previous_discipline
 
         discipline_class = class_from_row(columns, discipline)
@@ -111,7 +113,8 @@ module Scrapers
 
     # Finds the discipline from the current row in the guide
     # Creates a new one if doesn't find any with that code in the database
-    def discipline_from_row(columns)
+    # When creating a new discipline, it will use the latest curriculum from the guide courses
+    def discipline_from_row(columns, latest_curriculum)
       discipline_text = columns[0].text
       return nil if discipline_text.blank?
 
@@ -121,7 +124,7 @@ module Scrapers
       name = split_text[1..].join(' - ')
       name = Titleizer.discipline_name(name)
 
-      Discipline.create!(code:, name:)
+      Discipline.create!(code:, name:, curriculum: latest_curriculum)
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
       Discipline.find_by(code:)
     end

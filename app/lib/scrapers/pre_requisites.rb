@@ -48,6 +48,8 @@ module Scrapers
         code, pre_requisite_text = discipline_row_data(row)
         pre_requisite_codes = parse_pre_requisite_text(pre_requisite_text, previous_codes)
 
+        next if pre_requisite_codes.blank?
+
         course_discipline = find_course_discipline(course, code)
         store_pre_requisites(course_discipline, pre_requisite_codes)
 
@@ -85,10 +87,7 @@ module Scrapers
 
     # Finds a course_discipline object by passing the course model and the discipline code
     def find_course_discipline(course, code)
-      CourseDiscipline.find_by(
-        course:,
-        discipline: Discipline.where(code:)
-      )
+      course.course_disciplines.find_by(discipline: Discipline.where(code:))
     end
 
     # Stores the pre requisites of the course discipline
