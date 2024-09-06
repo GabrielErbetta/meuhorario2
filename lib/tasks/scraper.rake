@@ -107,7 +107,7 @@ namespace :scraper do
     disciplines_without_hours = Discipline.where(hours: nil)
 
     puts "    #{disciplines_without_hours.size} disciplines without hours"
-    puts '      of ~512 expected'
+    puts '      of ~334 expected'
 
     puts '-> Finished'
   end

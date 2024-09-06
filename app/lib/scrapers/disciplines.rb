@@ -47,7 +47,8 @@ module Scrapers
       rows.each do |row|
         semester, nature, code, name, curriculum = discipline_row_data(row)
 
-        semester ||= current_semester if nature == 'OB'
+        semester   ||= current_semester if nature == 'OB'
+        curriculum ||= course.curriculum
         current_semester = semester
 
         discipline = store_discipline(code, name, curriculum)
