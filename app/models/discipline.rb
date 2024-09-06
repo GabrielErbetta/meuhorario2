@@ -4,4 +4,5 @@ class Discipline < ApplicationRecord
   has_many :discipline_classes, dependent: :destroy
 
   validates :code, presence: true, uniqueness: true
+  validates :curriculum, presence: true
 end

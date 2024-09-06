@@ -38,7 +38,7 @@ module Scrapers
       body = info_page.body
       hours = body.match(/Carga Hor.ria - Total: (\d+) horas/)&.captures&.first
 
-      discipline.update(hours:)
+      discipline.update(hours:) if hours
     end
   end
 end
