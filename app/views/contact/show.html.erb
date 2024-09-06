@@ -21,7 +21,7 @@
         <textarea name="contact[message]" cols="30" rows="10" required></textarea>
       </div>
       <div class="small-12 medium-offset-1 medium-10 large-offset-2 large-8 columns end">
-        <button class="button float-right">Enviar</button>
+        <%= invisible_recaptcha_tags class: 'button float-right', text: 'Enviar' %>
       </div>
     <% end %>
   </div>
