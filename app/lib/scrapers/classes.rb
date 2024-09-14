@@ -58,19 +58,13 @@ module Scrapers
     #   professor_schedule
     def scrape_classes(guide_uri)
       courses = courses_from_uri(guide_uri)
-
-      guide = Nokogiri::HTML5.get guide_uri # Fixes document errors by closing open tags and more
-
-      rows = guide.search('body').css('table').css('tr')
-      return if rows.blank?
-
-      class_rows = rows[7..]
+      latest_curriculum = courses.map(&:curriculum).max
 
       previous_discipline       = nil
       previous_discipline_class = nil
       previous_schedule         = nil
 
-      latest_curriculum = courses.map(&:curriculum).max
+      class_rows = class_rows_from_guide_uri(guide_uri)
 
       class_rows.each do |row|
         columns = row.css('td')
@@ -109,6 +103,18 @@ module Scrapers
       course_code = '316' if course_code == '301' # For 'Administração' course code divergence
 
       Course.where('code LIKE ?', "#{course_code}%")
+    end
+
+    # Fetches the guide html from the uri and returns the class rows without the header rows
+    # Uses Nokogiri::HTML5 to fix document errors by closing open tags and more
+    def class_rows_from_guide_uri(guide_uri)
+      guide_html = URI(guide_uri).read
+      guide = Nokogiri::HTML5(guide_html, nil, Encoding::ASCII_8BIT)
+
+      rows = guide.search('body').css('table').css('tr')
+      return [] if rows.blank?
+
+      rows[7..]
     end
 
     # Finds the discipline from the current row in the guide
