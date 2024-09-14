@@ -19,7 +19,7 @@ namespace :scraper do
     courses = courses_scraper.scrape
 
     puts "    #{courses} courses found"
-    puts '      of ~118 expected'
+    puts '      of ~120 expected'
 
     puts '-> Finished'
   end
@@ -39,7 +39,7 @@ namespace :scraper do
     orphan_courses = Course.where(area: nil)
 
     puts "    #{orphan_courses.size} orphan courses remain"
-    puts '      of 0 expected'
+    puts '      of 2 expected'
 
     puts '-> Finished'
   end
@@ -54,12 +54,12 @@ namespace :scraper do
     disciplines = disciplines_scraper.scrape
 
     puts "    #{disciplines} disciplines found"
-    puts '      of ~6200 expected'
+    puts '      of ~6383 expected'
 
     course_disciplines = CourseDiscipline.all
 
     puts "    #{course_disciplines.size} course disciplines found"
-    puts '      of ~12211 expected'
+    puts '      of ~12553 expected'
 
     courses_without_disciplines = Course.where.not(id: CourseDiscipline.select(:course_id))
 
@@ -79,7 +79,7 @@ namespace :scraper do
     pre_requisites = pre_requisites_scraper.scrape
 
     puts "    #{pre_requisites} pre requisite links between disciplines"
-    puts '      of ~7754 expected'
+    puts '      of ~8069 expected'
 
     pre_disciplines  = CourseDiscipline.where(id: PreRequisite.select(:pre_discipline_id))
     post_disciplines = CourseDiscipline.where(id: PreRequisite.select(:post_discipline_id))
@@ -102,12 +102,12 @@ namespace :scraper do
     updated_disciplines = discipline_infos_scraper.scrape
 
     puts "    #{updated_disciplines} disciplines with hours"
-    puts '      of ~5687 expected'
+    puts '      of ~6075 expected'
 
     disciplines_without_hours = Discipline.where(hours: nil)
 
     puts "    #{disciplines_without_hours.size} disciplines without hours"
-    puts '      of ~334 expected'
+    puts '      of ~308 expected'
 
     puts '-> Finished'
   end
@@ -122,37 +122,37 @@ namespace :scraper do
     discipline_classes = classes_scraper.scrape
 
     puts "    #{discipline_classes} classes found"
-    puts '      of ~8857 expected'
+    puts '      of ~9437 expected'
 
     discipline_offers = DisciplineClassOffer.all
 
     puts "    #{discipline_offers.size} discipline offers found"
-    puts '      of ~8924 expected'
+    puts '      of ~9479 expected'
 
     course_offers = CourseClassOffer.all
 
     puts "    #{course_offers.size} course offers found"
-    puts '      of ~16414 expected'
+    puts '      of ~17109 expected'
 
     disciplines_without_classes = Discipline.where.not(id: DisciplineClass.select(:discipline_id))
 
     puts "    #{disciplines_without_classes.size} disciplines without classes found"
-    puts '      of ~3162 expected'
+    puts '      of ~3033 expected'
 
     courses_without_classes = Course.where.not(id: CourseClassOffer.select(:course_id))
 
     puts "    #{courses_without_classes.size} courses without classes found"
-    puts '      of ~11 expected'
+    puts '      of ~12 expected'
 
     schedules = Schedule.all
 
     puts "    #{schedules.size} schedules found"
-    puts '      of ~15160 expected'
+    puts '      of ~16807 expected'
 
     professors = Professor.all
 
     puts "    #{professors.size} professors found"
-    puts '      of ~2498 expected'
+    puts '      of ~2714 expected'
 
     puts '-> Finished'
   end
