@@ -15,6 +15,7 @@ I am very slowly rebuilding this project in place. This is the current status:
 - [x] Containerization
 - [x] Enviroment - Ruby + Rails + Other gems
 - [x] Scraping
+- [ ] Multiple Curriculums
 - [ ] Cleanup
 - [ ] Environment 2 (it's been so long since the first that i have to do it again)
 - [ ] Control Panel
