@@ -57,7 +57,9 @@ module Scrapers
       end
 
       guide_uris = guide_links.map { |a| URI.join(BASE_URI, a['href']).to_s }
-      guide_uris.select { |uri| uri.include? '/sites/supac.ufba.br/files/' }
+      guide_uris = guide_uris.select { |uri| uri.include? '/sites/supac.ufba.br/files/' }
+
+      guide_uris.uniq
     end
 
     # Scrapes a course guide, storing the informations
