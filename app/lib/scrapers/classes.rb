@@ -19,9 +19,11 @@ module Scrapers
       agent = Mechanize.new
       hub = agent.get "#{BASE_URI}/guia-matricula-graduacao"
 
+      current_semester = semester_from_hub(hub)
+
       guides = guide_uris_from_hub(hub)
       guides.each do |guide|
-        @queue.push([guide])
+        @queue.push([guide, current_semester])
       end
 
       runner = ConcurrentRunner.new(queue: @queue, threads:)
@@ -31,6 +33,12 @@ module Scrapers
     end
 
     private
+
+    # Gets the current semester from the hub page to validate the guides
+    def semester_from_hub(hub)
+      title = hub.at('h1.title.gutter').text
+      title.scan(/\d/).join
+    end
 
     # Scrapes a guide hub and returns the uri of the course guides found
     def guide_uris_from_hub(hub)
@@ -56,7 +64,12 @@ module Scrapers
     # Creates disciplines if they are fuond in the guides but not in the database
     # Stores discipline_class, discipline_class_offer, course_class_offer, schedule, professor and
     #   professor_schedule
-    def scrape_classes(guide_uri)
+    def scrape_classes(guide_uri, current_semester)
+      guide = fetch_guide(guide_uri)
+
+      guide_semester = semester_from_guide(guide)
+      return if guide_semester != current_semester
+
       courses = courses_from_uri(guide_uri)
       latest_curriculum = courses.map(&:curriculum).max
 
@@ -64,7 +77,7 @@ module Scrapers
       previous_discipline_class = nil
       previous_schedule         = nil
 
-      class_rows = class_rows_from_guide_uri(guide_uri)
+      class_rows = class_rows_from_guide(guide)
 
       class_rows.each do |row|
         columns = row.css('td')
@@ -94,6 +107,19 @@ module Scrapers
       end
     end
 
+    # Fetches the guide html from the uri and parses it with Nokogiri
+    # Uses Nokogiri::HTML5 to fix document errors by closing open tags and more
+    def fetch_guide(guide_uri)
+      guide_html = URI(guide_uri).read
+      Nokogiri::HTML5(guide_html, nil, Encoding::ASCII_8BIT)
+    end
+
+    # Scrapes the guide for its semester
+    def semester_from_guide(guide)
+      title = guide.at('p > font > text()').text
+      title.scan(/\d/).join
+    end
+
     # Finds the courses from the code in the course guide uri
     def courses_from_uri(uri)
       file_name = uri.split('/').last
@@ -106,11 +132,7 @@ module Scrapers
     end
 
     # Fetches the guide html from the uri and returns the class rows without the header rows
-    # Uses Nokogiri::HTML5 to fix document errors by closing open tags and more
-    def class_rows_from_guide_uri(guide_uri)
-      guide_html = URI(guide_uri).read
-      guide = Nokogiri::HTML5(guide_html, nil, Encoding::ASCII_8BIT)
-
+    def class_rows_from_guide(guide)
       rows = guide.search('body').css('table').css('tr')
       return [] if rows.blank?
 
