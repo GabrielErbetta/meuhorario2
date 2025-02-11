@@ -96,6 +96,11 @@ td.error {
   border: 2px solid red !important;
 }
 
+.accordion-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 
 
 @media only screen and (max-width: 40em) {
@@ -106,5 +111,14 @@ td.error {
   .block {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .footer {
+    height: auto;
+    padding: 20px 0;
+
+    .footer-area {
+      line-height: 3;
+    }
   }
 }
