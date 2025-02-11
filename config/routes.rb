@@ -28,4 +28,8 @@ Rails.application.routes.draw do
   post 'contato',
        to: 'contact#submit',
        as: 'contact_submit'
+
+  get 'perguntas-frequentes',
+      to: 'faq#show',
+      as: 'faq_show'
 end

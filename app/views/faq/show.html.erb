@@ -1,0 +1,110 @@
+<div class="wrapper">
+  <%= render 'shared/header' %>
+
+  <div class="row">
+    <div class="columns small-12 medium-10 small-centered">
+      <h3 class="text-center text-bold" style="margin-bottom: 32px; font-weight: 600;">Perguntas Frequentes</h3>
+
+      <ul class="accordion" data-accordion data-allow-all-closed="true">
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">Quando o MeuHorário será atualizado para o semestre 20XX.X?</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>O MeuHorário é sempre atualizado quando os guias de matrícula são publicados no SUPAC.</p>
+            <p>
+              Assim que os guias de matrícula são publicados, o script de atualização é rodado e o site
+              volta pro ar quando eu validar que está tudo certo e corrigir possíveis problemas.
+            </p>
+          </div>
+        </li>
+
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">Por que não atualiza com as matérias do SIAC?</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>
+              Porque as turmas que aparecem no SIAC não têm todas as informações necessárias.
+              Os principais problemas são:
+            </p>
+
+            <ul>
+              <li>
+                <b>As turmas não são separadas por curso</b>
+                <p>
+                  Todas as turmas da disciplina aparecem e não dá para diferenciar qual delas será ofertada para qual curso.
+                  Não adianta mostrar as 21 turmas de Cálculo A se alunos de um curso só poderão ser matriculados em uma delas.
+                  Além disso, não dá para saber quantas vagas existem em cada turma para cada curso.
+                </p>
+              </li>
+
+              <li>
+                <b>Turmas não são agrupadas</b>
+                <p>
+                  Algumas disciplinas são uma combinação de turmas teóricas e práticas e o SIAC mostra essas turmas sem agrupá-las.
+                  Isso faz com que seja impossível saber qual turma teórica está combinada com qual turma prática.
+                </p>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">Esse site é oficial?</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>Não, esse site não é oficial da UFBA e nem recebe nenhum tipo de apoio dela. Ele é um projeto pessoal feito por um ex-aluno como TCC.</p>
+          </div>
+        </li>
+
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">O site está com problema em X lugar</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>
+              Acontece as vezes. É difícil garantir que os 200 e tantos cursos estão funcionando
+              e que as milhares de disciplinas estão corretas.
+            </p>
+            <p>Mande pra mim o problema pelo formulário de contato que vou tentar consertar logo, se for possível.</p>
+            <a href="<%= contact_show_path %>" class="button">Formulário de Contato</a>
+          </div>
+        </li>
+
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">Quando você vai consertar/melhorar X?</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>Um dia, eu espero.</p>
+            <p>Eu cuido desse projeto no meu tempo livre e não ganho nada com ele. Não sou mais estudante da UFBA desde 2017.</p>
+            <p>Se quiser me incentivar a fazer algo, é só pedir bastante pelo formulário de contato.</p>
+            <a href="<%= contact_show_path %>" class="button">Formulário de Contato</a>
+          </div>
+        </li>
+
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">Como posso ajudar?</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>
+              O código do MeuHorário é aberto e contribuições são bem-vindas.
+              Você também pode entrar em contato se tiver sugestões ou quiser ajudar de outra forma.
+            </p>
+            <a href="https://github.com/GabrielErbetta/meuhorario2" class="button">Repositório no GitHub</a>
+            <a href="<%= contact_show_path %>" class="button">Formulário de Contato</a>
+          </div>
+        </li>
+
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title">Tenho uma dúvida/crítica/sugestão</a>
+
+          <div class="accordion-content" data-tab-content>
+            <p>Preencha o formulário de contato. Se você deixar o seu email, eu vou responder assim que possível.</p>
+            <a href="<%= contact_show_path %>" class="button">Contato</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/footer' %>
+
